@@ -10,6 +10,7 @@ import Services from './components/Services';
 import Timeline from './components/Timeline';
 import Contact from './components/Contact';
 import Footer from './components/Footer';
+import Certifications from './components/Certifications';
 
 function App() {
   const [theme, setTheme] = useState(() => {
@@ -79,6 +80,7 @@ function App() {
           <Hero />
           <About />
           <TechStack theme={theme} />
+          <Certifications />
           <Projects />
           <UIUX />
           <Services />
