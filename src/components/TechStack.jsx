@@ -53,7 +53,6 @@ const CATEGORIES = [
     techs: [
       { icon: <FaHtml5 color="#E34F26" />, name: 'HTML5' },
       { icon: <FaCss3Alt color="#1572B6" />, name: 'CSS3' },
-      { icon: <SiSass color="#CC6699" />, name: 'Sass' },
       { icon: <SiReact color="#61DAFB" />, name: 'React' },
       { icon: <SiVite color="#646CFF" />, name: 'Vite' },
       { icon: <SiTailwindcss color="#06B6D4" />, name: 'Tailwind' },
@@ -66,7 +65,6 @@ const CATEGORIES = [
     techs: [
       { icon: <SiLaravel color="#FF2D20" />, name: 'Laravel' },
       { icon: <SiDjango color="#44B78B" />, name: 'Django' },
-      { icon: <SiWordpress color="#21759B" />, name: 'WordPress' },
       { icon: <SiApache color="#D22128" />, name: 'Apache' },
     ],
   },
