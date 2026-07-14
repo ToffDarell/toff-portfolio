@@ -1,5 +1,8 @@
 import React, { useState, useEffect } from 'react';
+import { AnimatePresence } from 'framer-motion';
 import Particles from './components/Particles';
+import DarkVeil from './components/ui/DarkVeil';
+import LoadingScreen from './components/ui/LoadingScreen';
 import Navbar from './components/Navbar';
 import Hero from './components/Hero';
 import About from './components/About';
@@ -13,6 +16,7 @@ import Footer from './components/Footer';
 import Certifications from './components/Certifications';
 
 function App() {
+  const [isLoading, setIsLoading] = useState(true);
   const [theme, setTheme] = useState(() => {
     if (typeof window !== 'undefined') {
       const saved = localStorage.getItem('portfolio-theme');
@@ -42,36 +46,70 @@ function App() {
     : ["#1e293b", "#3b82f6", "#475569", "#2563eb"];
 
   return (
-    <div className="relative min-h-screen w-full overflow-hidden bg-background-custom text-text-custom font-sans transition-colors duration-300">
-      {/* Fixed Particle Background */}
-      <div className="fixed inset-0 z-0">
-        <Particles
-          particleColors={particleColors}
-          particleCount={isDark ? 280 : 160}
-          particleSpread={isDark ? 15 : 18}
-          speed={isDark ? 0.05 : 0.03}
-          particleBaseSize={isDark ? 80 : 45}
-          moveParticlesOnHover={true}
-          particleHoverFactor={isDark ? 2 : 1.2}
-          alphaParticles={true}
-          sizeRandomness={1.5}
-          cameraDistance={25}
-        />
+    <>
+      <AnimatePresence mode="wait">
+        {isLoading && <LoadingScreen onComplete={() => setIsLoading(false)} />}
+      </AnimatePresence>
+
+      <div className="relative min-h-screen w-full overflow-hidden bg-background-custom text-text-custom font-sans transition-colors duration-300">
+      {/* Global Background */}
+      <div className={`fixed inset-0 z-0 ${isDark ? 'bg-[#050505]' : ''}`}>
+        {isDark ? (
+          <div className="w-full h-full opacity-60">
+            <DarkVeil 
+              speed={0.2} 
+              warpAmount={0.5} 
+              noiseIntensity={0.03} 
+              scanlineIntensity={0.1}
+            />
+            <div className="absolute inset-0 bg-gradient-to-b from-transparent to-[#050505]/80 pointer-events-none"></div>
+          </div>
+        ) : (
+          <div className="w-full h-full bg-[#f8f9fa] relative overflow-hidden">
+             <div className="absolute inset-0 opacity-30 saturate-150" style={{ filter: 'invert(1) hue-rotate(180deg)' }}>
+               <DarkVeil 
+                 speed={0.2} 
+                 warpAmount={0.5} 
+                 noiseIntensity={0.03} 
+                 scanlineIntensity={0.1}
+               />
+             </div>
+             
+             {/* Engineering Grid for Light Mode */}
+             <div 
+                className="absolute inset-0 pointer-events-none" 
+                style={{
+                  backgroundImage: `
+                    linear-gradient(to right, rgba(0,0,0,0.05) 1px, transparent 1px),
+                    linear-gradient(to bottom, rgba(0,0,0,0.05) 1px, transparent 1px)
+                  `,
+                  backgroundSize: '40px 40px',
+                  maskImage: 'linear-gradient(to bottom, black 40%, transparent 100%)',
+                  WebkitMaskImage: 'linear-gradient(to bottom, black 40%, transparent 100%)'
+                }}
+             ></div>
+
+             {/* Soft gradient to ensure text readability */}
+             <div className="absolute inset-0 bg-gradient-to-b from-transparent via-white/30 to-white/90 pointer-events-none"></div>
+          </div>
+        )}
       </div>
 
-      {/* Fixed Cyber Grid Background */}
-      <div 
-        className="fixed inset-0 z-0 pointer-events-none"
-        style={{
-          backgroundImage: `
-            linear-gradient(to right, rgba(255,255,255,0.03) 1px, transparent 1px),
-            linear-gradient(to bottom, rgba(255,255,255,0.03) 1px, transparent 1px)
-          `,
-          backgroundSize: '40px 40px',
-          maskImage: 'radial-gradient(ellipse at center, black 40%, transparent 80%)',
-          WebkitMaskImage: 'radial-gradient(ellipse at center, black 40%, transparent 80%)'
-        }}
-      ></div>
+      {/* Fixed Cyber Grid Background (Dark Mode Only) */}
+      {isDark && (
+        <div 
+          className="fixed inset-0 z-0 pointer-events-none"
+          style={{
+            backgroundImage: `
+              linear-gradient(to right, rgba(255,255,255,0.03) 1px, transparent 1px),
+              linear-gradient(to bottom, rgba(255,255,255,0.03) 1px, transparent 1px)
+            `,
+            backgroundSize: '40px 40px',
+            maskImage: 'radial-gradient(ellipse at center, black 40%, transparent 80%)',
+            WebkitMaskImage: 'radial-gradient(ellipse at center, black 40%, transparent 80%)'
+          }}
+        ></div>
+      )}
 
       <Navbar theme={theme} toggleTheme={toggleTheme} />
 
@@ -90,7 +128,8 @@ function App() {
       </main>
 
       <Footer />
-    </div>
+      </div>
+    </>
   );
 }
 

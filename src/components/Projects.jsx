@@ -1,8 +1,7 @@
-import React, { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { ExternalLink, Calendar, Code, FileText, Zap, BookOpen, DollarSign, Eye, ShoppingBag, Users, Grid, Orbit } from 'lucide-react';
-import { FaGithub, FaFigma } from 'react-icons/fa';
-import RadialOrbitalTimeline from './ui/radial-orbital-timeline';
+import React from 'react';
+import { motion } from 'framer-motion';
+import { ExternalLink, Calendar, Code, FileText, Zap, BookOpen, DollarSign, Eye, ShoppingBag, Users } from 'lucide-react';
+import { FaGithub } from 'react-icons/fa';
 
 const PROJECTS = [
   {
@@ -127,22 +126,7 @@ const PROJECTS = [
   },
 ];
 
-// Map PROJECTS to TimelineItem interface
-const timelineData = PROJECTS.map(p => ({
-  id: p.id,
-  title: p.title,
-  date: p.date,
-  content: p.desc,
-  category: p.category,
-  icon: p.icon,
-  relatedIds: p.relatedIds,
-  status: p.status,
-  energy: p.energy,
-}));
-
 const Projects = () => {
-  const [viewMode, setViewMode] = useState('grid'); // 'grid' or 'orbital'
-
   return (
     <section className="py-24 relative" id="projects">
       <div className="absolute left-0 top-1/2 w-96 h-96 rounded-full pointer-events-none -translate-y-1/2"
@@ -157,116 +141,70 @@ const Projects = () => {
           className="text-4xl md:text-5xl font-extrabold text-text-custom mb-8">
           Featured <span className="text-gradient">Projects</span>
         </motion.h2>
-
-        {/* View Toggle */}
-        <div className="flex items-center justify-center gap-2 mb-8">
-          <button
-            onClick={() => setViewMode('grid')}
-            className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold transition-all ${
-              viewMode === 'grid' 
-                ? 'bg-primary-custom text-white shadow-[0_0_20px_rgba(37,99,235,0.4)]' 
-                : 'bg-transparent text-text-muted-custom hover:text-text-custom glass'
-            }`}
-          >
-            <Grid className="w-4 h-4" /> Grid View
-          </button>
-          <button
-            onClick={() => setViewMode('orbital')}
-            className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold transition-all ${
-              viewMode === 'orbital' 
-                ? 'bg-primary-custom text-white shadow-[0_0_20px_rgba(37,99,235,0.4)]' 
-                : 'bg-transparent text-text-muted-custom hover:text-text-custom glass'
-            }`}
-          >
-            <Orbit className="w-4 h-4" /> Orbital View
-          </button>
-        </div>
       </div>
 
       <div className="min-h-[600px] relative">
-        <AnimatePresence mode="wait">
-          {viewMode === 'grid' ? (
-            <motion.div 
-              key="grid"
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.95 }}
-              transition={{ duration: 0.3 }}
-              className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 relative z-10"
-            >
-              {PROJECTS.map((p, i) => (
-                <motion.div
-                  key={i}
-                  initial={{ opacity: 0, y: 40 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true, margin: '-80px' }}
-                  transition={{ delay: (i % 3) * 0.1, duration: 0.5 }}
-                  className="group flex flex-col rounded-2xl overflow-hidden relative cursor-pointer"
-                  style={{
-                    background: 'var(--glass-bg)',
-                    border: '1px solid var(--glass-border)',
-                    backdropFilter: 'blur(20px)',
-                    transition: 'border-color 0.3s, box-shadow 0.3s, transform 0.3s',
-                  }}
-                  whileHover={{
-                    y: -8,
-                    boxShadow: `0 20px 40px ${p.color}15`,
-                    transition: { duration: 0.3 },
-                  }}
-                >
-                  <div className="h-[2px] w-full" style={{ background: `linear-gradient(90deg, ${p.color}, transparent)` }}></div>
-
-                  <div className="relative h-44 overflow-hidden">
-                    <div className="absolute inset-0 z-10 transition-opacity duration-300 bg-black/35"></div>
-                    <img
-                      src={p.image}
-                      alt={p.title}
-                      className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
-                    />
-                    <div className="absolute inset-0 z-20 flex items-center justify-center gap-3 opacity-0 group-hover:opacity-100 transition-all duration-300">
-                      <motion.a href={p.link} target="_blank" rel="noopener noreferrer" whileHover={{ scale: 1.1 }}
-                        className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold text-white cursor-pointer"
-                        style={{ background: 'rgba(0,0,0,0.7)', backdropFilter: 'blur(10px)', border: '1px solid rgba(255,255,255,0.2)' }}>
-                        <FaGithub className="w-4 h-4" /> Code
-                      </motion.a>
-                      <motion.a href="#" whileHover={{ scale: 1.1 }}
-                        className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold text-white cursor-pointer"
-                        style={{ background: p.color, boxShadow: `0 0 20px ${p.color}60` }}>
-                        <ExternalLink className="w-4 h-4" /> Demo
-                      </motion.a>
-                    </div>
-                  </div>
-
-                  <div className="p-5 flex flex-col flex-grow">
-                    <h3 className="text-base font-bold text-text-custom mb-2 group-hover:text-primary-custom transition-colors">
-                      {p.title}
-                    </h3>
-                    <p className="text-sm text-text-muted-custom leading-relaxed flex-grow mb-4">{p.desc}</p>
-                    <div className="flex flex-wrap gap-1.5 mt-auto">
-                      {p.tech.map((t, j) => (
-                        <span key={j} className="text-xs px-2.5 py-1 rounded-full font-medium"
-                              style={{ background: `${p.color}15`, color: p.color, border: `1px solid ${p.color}30` }}>
-                          {t}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-                </motion.div>
-              ))}
-            </motion.div>
-          ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 relative z-10">
+          {PROJECTS.map((p, i) => (
             <motion.div
-              key="orbital"
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.95 }}
-              transition={{ duration: 0.3 }}
-              className="w-full bg-black/5 rounded-3xl overflow-hidden glass border border-white/10 relative z-0"
+              key={i}
+              initial={{ opacity: 0, y: 40 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: '-80px' }}
+              transition={{ delay: (i % 3) * 0.1, duration: 0.5 }}
+              className="group flex flex-col rounded-2xl overflow-hidden relative cursor-pointer"
+              style={{
+                background: 'var(--glass-bg)',
+                border: '1px solid var(--glass-border)',
+                backdropFilter: 'blur(20px)',
+                transition: 'border-color 0.3s, box-shadow 0.3s, transform 0.3s',
+              }}
+              whileHover={{
+                y: -8,
+                boxShadow: `0 20px 40px ${p.color}15`,
+                transition: { duration: 0.3 },
+              }}
             >
-              <RadialOrbitalTimeline timelineData={timelineData} />
+              <div className="h-[2px] w-full" style={{ background: `linear-gradient(90deg, ${p.color}, transparent)` }}></div>
+
+              <div className="relative h-44 overflow-hidden">
+                <div className="absolute inset-0 z-10 transition-opacity duration-300 bg-black/35"></div>
+                <img
+                  src={p.image}
+                  alt={p.title}
+                  className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
+                />
+                <div className="absolute inset-0 z-20 flex items-center justify-center gap-3 opacity-0 group-hover:opacity-100 transition-all duration-300">
+                  <motion.a href={p.link} target="_blank" rel="noopener noreferrer" whileHover={{ scale: 1.1 }}
+                    className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold text-white cursor-pointer"
+                    style={{ background: 'rgba(0,0,0,0.7)', backdropFilter: 'blur(10px)', border: '1px solid rgba(255,255,255,0.2)' }}>
+                    <FaGithub className="w-4 h-4" /> Code
+                  </motion.a>
+                  <motion.a href="#" whileHover={{ scale: 1.1 }}
+                    className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold text-white cursor-pointer"
+                    style={{ background: p.color, boxShadow: `0 0 20px ${p.color}60` }}>
+                    <ExternalLink className="w-4 h-4" /> Demo
+                  </motion.a>
+                </div>
+              </div>
+
+              <div className="p-5 flex flex-col flex-grow">
+                <h3 className="text-base font-bold text-text-custom mb-2 group-hover:text-primary-custom transition-colors">
+                  {p.title}
+                </h3>
+                <p className="text-sm text-text-muted-custom leading-relaxed flex-grow mb-4">{p.desc}</p>
+                <div className="flex flex-wrap gap-1.5 mt-auto">
+                  {p.tech.map((t, j) => (
+                    <span key={j} className="text-xs px-2.5 py-1 rounded-full font-medium"
+                          style={{ background: `${p.color}15`, color: p.color, border: `1px solid ${p.color}30` }}>
+                      {t}
+                    </span>
+                  ))}
+                </div>
+              </div>
             </motion.div>
-          )}
-        </AnimatePresence>
+          ))}
+        </div>
       </div>
     </section>
   );
