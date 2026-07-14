@@ -54,6 +54,13 @@ const LoadingScreen = ({ onComplete }) => {
     >
       <div className="w-full max-w-xs px-6 flex flex-col space-y-6">
         
+        {/* Domain Tag */}
+        <div className="text-center mb-1">
+          <span className="text-[10px] font-semibold tracking-[0.3em] text-purple-400/80 uppercase">
+            www.toffdarell.dev
+          </span>
+        </div>
+
         {/* Step Indicator */}
         <div className="h-6 overflow-hidden">
           <motion.p

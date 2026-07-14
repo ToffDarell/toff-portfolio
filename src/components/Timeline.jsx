@@ -4,28 +4,28 @@ import { Sprout, Cpu, Rocket, Bot } from 'lucide-react';
 
 const EVENTS = [
   {
-    period: 'The Beginning',
+    period: '2022 — The Beginning',
     title: 'Learning Programming',
     desc: 'Started the journey with algorithms, data structures, and the C language — laying the foundation for everything that followed.',
     color: '#7c3aed',
     icon: <Sprout className="w-5 h-5" style={{ color: '#7c3aed' }} />,
   },
   {
-    period: 'Building Phase',
+    period: '2023 — Building Phase',
     title: 'Developing Systems',
     desc: 'Created early management systems, local reservation platforms, and mastered PHP & MySQL full-stack development.',
     color: '#2563eb',
     icon: <Cpu className="w-5 h-5" style={{ color: '#2563eb' }} />,
   },
   {
-    period: 'SaaS & Web Era',
+    period: '2024 — SaaS & Web Era',
     title: 'Modern Full Stack & SaaS',
     desc: 'Built complex platforms — PayMonitor Lending SaaS, MERN stack research archives, and professional Laravel applications.',
     color: '#db2777',
     icon: <Rocket className="w-5 h-5" style={{ color: '#db2777' }} />,
   },
   {
-    period: 'Current Focus',
+    period: '2025 — Current Focus',
     title: 'AI, Vision & Infrastructure',
     desc: 'Exploring computer vision with YOLO, AI/ML integration, Cisco networking, and Raspberry Pi embedded projects.',
     color: '#f59e0b',

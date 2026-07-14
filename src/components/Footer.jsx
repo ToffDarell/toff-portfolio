@@ -10,10 +10,10 @@ const LINKS = [
 ];
 
 const SOCIALS = [
-  { icon: <FaGithub className="w-5 h-5" />, href: 'https://github.com/ToffDarell', label: 'FaGithub', color: '#ffffff' },
-  { icon: <FaLinkedin className="w-5 h-5" />, href: 'https://www.linkedin.com/in/toff-darell-vergara-839462408/', label: 'FaLinkedin', color: '#3b82f6' },
-  { icon: <FaFacebook className="w-5 h-5" />, href: 'https://www.facebook.com/toffdarell', label: 'FaFacebook', color: '#2563eb' },
-  { icon: <FaInstagram className="w-5 h-5" />, href: 'https://www.instagram.com/topewooo/', label: 'FaInstagram', color: '#E1306C' },
+  { icon: <FaGithub className="w-5 h-5" />, href: 'https://github.com/ToffDarell', label: 'GitHub Profile', color: '#ffffff' },
+  { icon: <FaLinkedin className="w-5 h-5" />, href: 'https://www.linkedin.com/in/toff-darell-vergara-839462408/', label: 'LinkedIn Profile', color: '#3b82f6' },
+  { icon: <FaFacebook className="w-5 h-5" />, href: 'https://www.facebook.com/toffdarell', label: 'Facebook Profile', color: '#2563eb' },
+  { icon: <FaInstagram className="w-5 h-5" />, href: 'https://www.instagram.com/topewooo/', label: 'Instagram Profile', color: '#E1306C' },
 ];
 
 const Footer = () => (

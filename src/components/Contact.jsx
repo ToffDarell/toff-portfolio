@@ -27,8 +27,7 @@ const Contact = () => {
       setStatus('sent');
       formRef.current.reset();
       setTimeout(() => setStatus('idle'), 5000);
-    } catch (err) {
-      console.error('EmailJS error:', err);
+    } catch {
       setStatus('error');
       setTimeout(() => setStatus('idle'), 4000);
     }
@@ -214,7 +213,7 @@ const Contact = () => {
             disabled={status === 'sending'}
             whileHover={status === 'idle' ? { scale: 1.02, boxShadow: '0 0 30px rgba(124,58,237,0.5)' } : {}}
             whileTap={status === 'idle' ? { scale: 0.98 } : {}}
-            className="w-full py-4 rounded-xl font-bold text-text-custom flex items-center justify-center gap-2 transition-all"
+            className="w-full py-4 rounded-xl font-bold text-white flex items-center justify-center gap-2 transition-all"
             style={{
               background:
                 status === 'sent'    ? 'rgba(5,150,105,0.9)' :

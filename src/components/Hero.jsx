@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { ChevronRight } from 'lucide-react';
+import { ChevronRight, Download } from 'lucide-react';
 import { FaGithub, FaLinkedin, FaFacebook, FaInstagram } from 'react-icons/fa';
+import resume from '../assets/Toff Darell B. Vergara — Resume.pdf';
 
 const ROLES = ['Full Stack Developer', 'Software Engineer', 'SaaS Developer', 'AI Enthusiast'];
 
@@ -30,7 +31,7 @@ const Hero = () => {
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-blue-500">Toff</span>
           </h1>
 
-          <div className="flex flex-wrap items-center gap-2 text-xl sm:text-2xl font-medium text-text-muted-custom h-9">
+          <div className="flex flex-wrap items-center gap-2 text-xl sm:text-2xl font-medium text-text-muted-custom h-9" aria-live="polite" aria-label="Current role">
             <span>I build as a</span>
             <AnimatedRole role={ROLES[roleIdx]} />
           </div>
@@ -42,22 +43,24 @@ const Hero = () => {
 
           <div className="flex flex-wrap gap-4 mt-4">
             <motion.a
-              href="#projects"
+              href={resume}
+              download="Toff_Darell_Vergara_Resume.pdf"
               whileHover={{ scale: 1.05, boxShadow: '0 0 30px rgba(124,58,237,0.5)' }}
               whileTap={{ scale: 0.95 }}
               className="flex items-center gap-2 px-8 py-4 rounded-xl font-semibold text-white group transition-all cursor-pointer"
               style={{ background: 'linear-gradient(135deg, #7c3aed, #2563eb)', boxShadow: '0 4px 15px rgba(124,58,237,0.3)' }}
             >
-              View Projects
-              <ChevronRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+              <Download className="w-5 h-5" />
+              Download CV
             </motion.a>
             <motion.a
-              href="#contact"
+              href="#projects"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               className="glass flex items-center gap-2 px-8 py-4 rounded-xl font-semibold text-text-custom hover:border-purple-500/50 transition-all cursor-pointer"
             >
-              Contact Me
+              View Projects
+              <ChevronRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
             </motion.a>
           </div>
 
@@ -82,7 +85,7 @@ const Hero = () => {
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 1, delay: 0.2, ease: 'easeOut' }}
-          className="w-full lg:w-1/2 flex justify-center lg:justify-end items-center relative"
+          className="w-full lg:w-1/2 flex justify-center lg:justify-end items-center relative group"
         >
           {/* Ambient Glow behind the image */}
           <div className="absolute w-64 h-80 sm:w-72 sm:h-96 rounded-2xl bg-purple-600/20 blur-[50px] opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>

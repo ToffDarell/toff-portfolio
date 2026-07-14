@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Archivo:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700;800&display=swap');
 
 @import "tailwindcss";
 
@@ -18,8 +18,8 @@
   --color-accent-custom: var(--accent-custom);
   --color-border-custom: var(--border-custom);
 
-  --font-family-sans: 'Space Grotesk', sans-serif;
-  --font-family-heading: 'Archivo', sans-serif;
+  --font-family-sans: 'Geist Variable', 'Geist', system-ui, sans-serif;
+  --font-family-heading: 'Geist Variable', 'Geist', system-ui, sans-serif;
 
   --animate-spin-slow: spin 8s linear infinite;
   --animate-pulse-slow: pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite;
@@ -34,8 +34,8 @@
 @layer base {
   :root {
     --bg-custom: #FAFAFA;
-    --text-custom: #09090B;
-    --text-muted: #475569;
+    --text-custom: #111111;
+    --text-muted: #52525B;
     --surface-custom: #FFFFFF;
     --border-custom: #E2E8F0;
     --glass-bg: rgba(255, 255, 255, 0.75);
@@ -54,8 +54,8 @@
 
   .dark {
     --bg-custom: #000000;
-    --text-custom: #FFFFFF;
-    --text-muted: #94A3B8;
+    --text-custom: #F5F5F5;
+    --text-muted: #71717A;
     --surface-custom: rgba(255, 255, 255, 0.03);
     --border-custom: rgba(255, 255, 255, 0.08);
     --glass-bg: rgba(255, 255, 255, 0.04);
@@ -75,14 +75,14 @@
   body {
     background-color: var(--bg-custom);
     color: var(--text-custom);
-    font-family: 'Space Grotesk', sans-serif;
+    font-family: 'Geist Variable', 'Geist', system-ui, sans-serif;
     overflow-x: hidden;
     transition: background-color 0.3s ease, color 0.3s ease;
     @apply bg-background text-foreground;
   }
 
   h1, h2, h3, h4, h5, h6 {
-    font-family: 'Archivo', sans-serif;
+    font-family: 'Geist Variable', 'Geist', system-ui, sans-serif;
   }
 
   ::selection {

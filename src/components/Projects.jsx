@@ -1,6 +1,5 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { ExternalLink, Calendar, Code, FileText, Zap, BookOpen, DollarSign, Eye, ShoppingBag, Users } from 'lucide-react';
 import { FaGithub } from 'react-icons/fa';
 
 const PROJECTS = [
@@ -14,10 +13,6 @@ const PROJECTS = [
     link: 'https://github.com/ToffDarell/Homeroom-Management-System',
     date: 'Jan 2023',
     category: 'System',
-    icon: FileText,
-    relatedIds: [8],
-    status: 'completed',
-    energy: 60,
   },
   {
     id: 2,
@@ -29,10 +24,6 @@ const PROJECTS = [
     link: 'https://github.com/ToffDarell/BLACKOUTESPORTS',
     date: 'Apr 2023',
     category: 'Web App',
-    icon: Calendar,
-    relatedIds: [5, 7],
-    status: 'completed',
-    energy: 75,
   },
   {
     id: 3,
@@ -44,10 +35,6 @@ const PROJECTS = [
     link: 'https://github.com/ToffDarell/DODGING-BIRD-GAME',
     date: 'Jul 2023',
     category: 'Game',
-    icon: Zap,
-    relatedIds: [],
-    status: 'completed',
-    energy: 85,
   },
   {
     id: 4,
@@ -59,10 +46,6 @@ const PROJECTS = [
     link: 'https://github.com/ToffDarell/CPAG-Graduates-Research-Monitoring-System',
     date: 'Oct 2023',
     category: 'Archive',
-    icon: BookOpen,
-    relatedIds: [5, 8],
-    status: 'completed',
-    energy: 90,
   },
   {
     id: 5,
@@ -74,10 +57,6 @@ const PROJECTS = [
     link: 'https://github.com/ToffDarell/PayMonitor-',
     date: 'Jan 2024',
     category: 'SaaS',
-    icon: DollarSign,
-    relatedIds: [2, 4],
-    status: 'completed',
-    energy: 100,
   },
   {
     id: 6,
@@ -89,10 +68,6 @@ const PROJECTS = [
     link: 'https://github.com/ToffDarell/SAFERIDEWEB',
     date: 'Mar 2024',
     category: 'AI / CV',
-    icon: Eye,
-    relatedIds: [],
-    status: 'completed',
-    energy: 95,
   },
   {
     id: 7,
@@ -104,10 +79,6 @@ const PROJECTS = [
     link: 'https://github.com/ToffDarell/-Mugna-Leather-Arts',
     date: 'May 2024',
     category: 'E-Commerce',
-    icon: ShoppingBag,
-    relatedIds: [2],
-    status: 'in-progress',
-    energy: 80,
   },
   {
     id: 8,
@@ -119,10 +90,6 @@ const PROJECTS = [
     link: 'https://github.com/ToffDarell/Barangay-Smart-Services',
     date: 'Jun 2024',
     category: 'Gov Tech',
-    icon: Users,
-    relatedIds: [1, 4],
-    status: 'in-progress',
-    energy: 70,
   },
 ];
 
@@ -177,13 +144,8 @@ const Projects = () => {
                 <div className="absolute inset-0 z-20 flex items-center justify-center gap-3 opacity-0 group-hover:opacity-100 transition-all duration-300">
                   <motion.a href={p.link} target="_blank" rel="noopener noreferrer" whileHover={{ scale: 1.1 }}
                     className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold text-white cursor-pointer"
-                    style={{ background: 'rgba(0,0,0,0.7)', backdropFilter: 'blur(10px)', border: '1px solid rgba(255,255,255,0.2)' }}>
-                    <FaGithub className="w-4 h-4" /> Code
-                  </motion.a>
-                  <motion.a href="#" whileHover={{ scale: 1.1 }}
-                    className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold text-white cursor-pointer"
                     style={{ background: p.color, boxShadow: `0 0 20px ${p.color}60` }}>
-                    <ExternalLink className="w-4 h-4" /> Demo
+                    <FaGithub className="w-4 h-4" /> View on GitHub
                   </motion.a>
                 </div>
               </div>
