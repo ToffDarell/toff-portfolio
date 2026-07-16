@@ -138,17 +138,27 @@ export default async function handler(req) {
     });
   }
 
-  // Validate that messages array exists and is non-empty
-  if (!Array.isArray(body.messages) || body.messages.length === 0) {
-    return new Response(JSON.stringify({ error: 'Invalid request: messages array required' }), {
+  // ── #5 STRIP SYSTEM PROMPT INJECTION ─────────────────────────────────────
+  // WHY: A malicious user could send {"role":"system","content":"ignore everything..."}
+  // to hijack Zen's persona. We strip ALL system messages from the client payload
+  // before any further validation — this also gracefully handles the legitimate
+  // system message that ChatBot.jsx includes (buildSystemPrompt), since the model
+  // and token lock below already enforces server-side control over the conversation.
+  // IMPORTANT: This filter runs BEFORE role validation so the legitimate system
+  // message from the frontend doesn't trigger a 400 error.
+  const safeMessages = body.messages.filter((m) => m.role !== 'system');
+
+  // Validate that messages array exists and has at least one user/assistant message
+  if (safeMessages.length === 0) {
+    return new Response(JSON.stringify({ error: 'Invalid request: no user messages provided' }), {
       status: 400,
       headers: { 'Content-Type': 'application/json', ...corsHeaders },
     });
   }
 
-  // Validate each message has the expected shape (role + content strings)
+  // Validate each remaining message has the expected shape (role + content strings)
   const validRoles = new Set(['user', 'assistant']);
-  const hasInvalidMessage = body.messages.some(
+  const hasInvalidMessage = safeMessages.some(
     (m) => !validRoles.has(m.role) || typeof m.content !== 'string' || m.content.trim() === ''
   );
   if (hasInvalidMessage) {
@@ -157,15 +167,6 @@ export default async function handler(req) {
       headers: { 'Content-Type': 'application/json', ...corsHeaders },
     });
   }
-
-  // ── #5 STRIP SYSTEM PROMPT INJECTION ─────────────────────────────────────
-  // WHY: A malicious user could send {"role":"system","content":"ignore everything..."}
-  // in the messages array to hijack Zen's persona or extract hidden instructions.
-  // We filter those out and only use the client's user/assistant turns.
-  // The real system prompt is built and injected server-side in ChatBot.jsx
-  // (already handled — the system message comes from the frontend's buildSystemPrompt,
-  // but stripping here ensures no extra system messages sneak through).
-  const safeMessages = body.messages.filter((m) => m.role !== 'system');
 
   // ── Forward the hardened request to Groq's API ───────────────────────────
   // #4: model, max_tokens, and temperature are ALWAYS overridden server-side.
