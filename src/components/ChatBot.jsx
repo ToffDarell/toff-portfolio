@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { MessageCircle, X, Send, Bot, User, Sparkles, ChevronDown } from 'lucide-react';
+import { MessageCircle, X, Send, User, ChevronDown } from 'lucide-react';
+import zenGif from '../assets/chatrprofile.gif';
 
 // ─── System Prompt: Everything about Toff ────────────────────────────────────
 const SYSTEM_PROMPT = `You are an AI assistant embedded in Toff Darell Vergara's developer portfolio. Your job is to answer questions about Toff in a friendly, professional, and concise manner. Use "Toff" or "he/him" pronouns. Keep answers conversational and short (2-4 sentences max) unless a detailed answer is clearly needed. Never make up information — only use what's provided below. IMPORTANT: Never use markdown symbols — no asterisks (*), no bold (**text**), no headers with #. You MAY use dash bullet points (- item) when listing multiple things, as they render cleanly in plain text. Otherwise write in plain conversational sentences.
@@ -154,8 +155,9 @@ const buildSystemPrompt = (activeSection) => {
   return `${SYSTEM_PROMPT}\n\n=== CURRENT PAGE CONTEXT ===\n${ctx}`;
 };
 
-// ─── Groq API Call ────────────────────────────────────────────────────────────
-async function callGroq(messages, onChunk, activeSection = 'hero') {
+// ─── Groq API Call (with 429 handling) ──────────────────────────────────────
+// onRateLimit(retryAfterSeconds) is called when the API returns 429.
+async function callGroq(messages, onChunk, activeSection = 'hero', onRateLimit = null) {
   const apiKey = import.meta.env.VITE_GROQ_API_KEY;
   const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
     method: 'POST',
@@ -171,6 +173,41 @@ async function callGroq(messages, onChunk, activeSection = 'hero') {
       temperature: 0.7,
     }),
   });
+
+  if (response.status === 429) {
+    let retryAfter = null;
+    try {
+      const errBody = await response.json();
+      const errMsg = errBody?.error?.message || '';
+      const match = errMsg.match(/try again in ([0-9a-zA-Z\.]+)/i);
+      if (match && match[1]) {
+        const timeStr = match[1];
+        let seconds = 0;
+        const hrMatch = timeStr.match(/(\d+(?:\.\d+)?)h/i);
+        const minMatch = timeStr.match(/(\d+(?:\.\d+)?)m(?!s)/i);
+        const secMatch = timeStr.match(/(\d+(?:\.\d+)?)s/i);
+        
+        if (hrMatch) seconds += parseFloat(hrMatch[1]) * 3600;
+        if (minMatch) seconds += parseFloat(minMatch[1]) * 60;
+        if (secMatch) seconds += parseFloat(secMatch[1]);
+        
+        if (seconds > 0) {
+          retryAfter = seconds;
+        }
+      }
+    } catch {
+      // ignore JSON parse errors
+    }
+
+    if (retryAfter === null) {
+      retryAfter = parseFloat(response.headers.get('retry-after') || '60');
+    }
+
+    if (onRateLimit) onRateLimit(retryAfter);
+    const err = new Error('RATE_LIMITED');
+    err.retryAfter = retryAfter;
+    throw err;
+  }
 
   if (!response.ok) {
     throw new Error(`Groq API error: ${response.status}`);
@@ -216,19 +253,26 @@ const MessageBubble = ({ msg, isDark = true }) => {
     >
       {/* Avatar */}
       <div
-        className={`flex-shrink-0 w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold shadow-lg`}
+        className={`flex-shrink-0 w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold shadow-lg overflow-hidden`}
         style={{
           background: isUser
             ? 'linear-gradient(135deg, #7c3aed, #2563eb)'
-            : isDark
-              ? 'linear-gradient(135deg, #1e1e2e, #2d2d44)'
-              : 'linear-gradient(135deg, #e8e8f0, #d4d4e0)',
-          border: isDark ? '1px solid rgba(255,255,255,0.1)' : '1px solid rgba(0,0,0,0.08)',
+            : 'linear-gradient(135deg, #7c3aed, #2563eb)',
+          border: '1px solid rgba(255,255,255,0.15)',
+          boxShadow: isUser ? '0 2px 10px rgba(124,58,237,0.4)' : '0 0 12px rgba(124,58,237,0.5)',
         }}
       >
         {isUser
           ? <User className="w-3.5 h-3.5 text-white" />
-          : <Bot className="w-3.5 h-3.5 text-purple-400" />}
+          : <img
+              src={zenGif}
+              alt="Zen"
+              className="w-full h-full object-cover"
+              style={{
+                filter: isDark ? 'invert(1) brightness(1.2)' : 'none',
+                mixBlendMode: isDark ? 'screen' : 'multiply',
+              }}
+            />}
       </div>
 
       {/* Bubble */}
@@ -274,15 +318,22 @@ const MessageBubble = ({ msg, isDark = true }) => {
 const TypingIndicator = ({ isDark = true }) => (
   <div className="flex gap-2.5 items-end">
     <div
-      className="flex-shrink-0 w-7 h-7 rounded-full flex items-center justify-center shadow-lg"
+      className="flex-shrink-0 w-7 h-7 rounded-full flex items-center justify-center shadow-lg overflow-hidden"
       style={{
-        background: isDark
-          ? 'linear-gradient(135deg, #1e1e2e, #2d2d44)'
-          : 'linear-gradient(135deg, #e8e8f0, #d4d4e0)',
-        border: isDark ? '1px solid rgba(255,255,255,0.1)' : '1px solid rgba(0,0,0,0.08)',
+        background: 'linear-gradient(135deg, #7c3aed, #2563eb)',
+        border: '1px solid rgba(255,255,255,0.15)',
+        boxShadow: '0 0 12px rgba(124,58,237,0.5)',
       }}
     >
-      <Bot className="w-3.5 h-3.5 text-purple-400" />
+      <img
+        src={zenGif}
+        alt="Zen"
+        className="w-full h-full object-cover"
+        style={{
+          filter: isDark ? 'invert(1) brightness(1.2)' : 'none',
+          mixBlendMode: isDark ? 'screen' : 'multiply',
+        }}
+      />
     </div>
     <div
       className="px-4 py-3 rounded-2xl rounded-bl-sm flex gap-1.5 items-center"
@@ -321,6 +372,10 @@ const ChatBot = ({ activeSection = 'hero', isDark = true }) => {
   const [showScrollBtn, setShowScrollBtn] = useState(false);
   const [isRedirecting, setIsRedirecting] = useState(false);
   const [floatingSuggestions, setFloatingSuggestions] = useState([]);
+  // Rate-limit cooldown: timestamp (ms) when the user can send again
+  const [rateLimitUntil, setRateLimitUntil] = useState(null);
+  const [cooldownSecs, setCooldownSecs] = useState(0);
+  const cooldownRef = useRef(null);
   const messagesEndRef = useRef(null);
   const messagesContainerRef = useRef(null);
   const inputRef = useRef(null);
@@ -332,6 +387,51 @@ const ChatBot = ({ activeSection = 'hero', isDark = true }) => {
       window.open('https://m.me/toffdarell', '_blank', 'noopener,noreferrer');
       setIsRedirecting(false);
     }, 600);
+  };
+
+  // ── Rate-limit countdown ticker ──
+  const startCooldown = (seconds) => {
+    const until = Date.now() + seconds * 1000;
+    setRateLimitUntil(until);
+    setCooldownSecs(seconds);
+    if (cooldownRef.current) clearInterval(cooldownRef.current);
+    cooldownRef.current = setInterval(() => {
+      const remaining = Math.max(0, (until - Date.now()) / 1000);
+      setCooldownSecs(remaining);
+      if (remaining <= 0) {
+        clearInterval(cooldownRef.current);
+        setRateLimitUntil(null);
+      }
+    }, 100); // 100ms tick for smooth high-resolution updates
+  };
+
+  useEffect(() => () => { if (cooldownRef.current) clearInterval(cooldownRef.current); }, []);
+
+  const isRateLimited = rateLimitUntil !== null && Date.now() < rateLimitUntil;
+
+  const formatCooldown = (secs) => {
+    if (secs <= 0) return '0.0s';
+    if (secs < 10) {
+      return `${secs.toFixed(1)}s`;
+    }
+    const h = Math.floor(secs / 3600);
+    const m = Math.floor((secs % 3600) / 60);
+    const s = Math.floor(secs % 60);
+    
+    const parts = [];
+    if (h > 0) parts.push(`${h}h`);
+    if (m > 0) parts.push(`${m}m`);
+    parts.push(`${s}s`);
+    return parts.join(' ');
+  };
+
+  const getResumeTime = () => {
+    if (!rateLimitUntil) return '';
+    return new Date(rateLimitUntil).toLocaleTimeString([], {
+      hour: 'numeric',
+      minute: '2-digit',
+      second: '2-digit',
+    });
   };
 
   // Scroll to bottom
@@ -360,7 +460,7 @@ const ChatBot = ({ activeSection = 'hero', isDark = true }) => {
 
   const sendMessage = async (text) => {
     const userText = (text || input).trim();
-    if (!userText || isLoading) return;
+    if (!userText || isLoading || isRateLimited) return;
     setInput('');
 
     const newMessages = [...messages, { role: 'user', content: userText }];
@@ -375,23 +475,24 @@ const ChatBot = ({ activeSection = 'hero', isDark = true }) => {
       const history = newMessages.map(m => ({ role: m.role, content: m.content }));
       let fullContent = '';
 
-      await callGroq(history, (chunk) => {
-        fullContent += chunk;
-        setMessages(prev =>
-          prev.map(m =>
-            m.id === assistantMsgId
-              ? { ...m, content: fullContent }
-              : m
-          )
-        );
-      }, activeSection);
+      await callGroq(
+        history,
+        (chunk) => {
+          fullContent += chunk;
+          setMessages(prev =>
+            prev.map(m =>
+              m.id === assistantMsgId ? { ...m, content: fullContent } : m
+            )
+          );
+        },
+        activeSection,
+        (retryAfter) => startCooldown(retryAfter),
+      );
 
       // Finalize (remove streaming flag)
       setMessages(prev =>
         prev.map(m =>
-          m.id === assistantMsgId
-            ? { ...m, streaming: false }
-            : m
+          m.id === assistantMsgId ? { ...m, streaming: false } : m
         )
       );
 
@@ -399,13 +500,18 @@ const ChatBot = ({ activeSection = 'hero', isDark = true }) => {
       const randomSugs = getRandomSuggestions(activeSection);
       setFloatingSuggestions(randomSugs);
     } catch (err) {
-      setMessages(prev =>
-        prev.map(m =>
-          m.id === assistantMsgId
-            ? { ...m, content: "Sorry, I couldn't connect to the AI. Please try again!", streaming: false }
-            : m
-        )
-      );
+      if (err.message === 'RATE_LIMITED') {
+        // Remove the empty assistant placeholder
+        setMessages(prev => prev.filter(m => m.id !== assistantMsgId));
+      } else {
+        setMessages(prev =>
+          prev.map(m =>
+            m.id === assistantMsgId
+              ? { ...m, content: "Sorry, I couldn't connect to the AI. Please try again!", streaming: false }
+              : m
+          )
+        );
+      }
     } finally {
       setIsLoading(false);
       setTimeout(() => inputRef.current?.focus(), 100);
@@ -431,7 +537,9 @@ const ChatBot = ({ activeSection = 'hero', isDark = true }) => {
         className="fixed bottom-5 right-5 sm:bottom-6 sm:right-6 z-50 w-12 h-12 sm:w-14 sm:h-14 rounded-full flex items-center justify-center cursor-pointer shadow-2xl"
         style={{
           background: 'linear-gradient(135deg, #7c3aed, #2563eb)',
-          boxShadow: '0 8px 32px rgba(124,58,237,0.5)',
+          boxShadow: isDark
+            ? '0 8px 32px rgba(124,58,237,0.5), 0 0 20px rgba(168, 85, 247, 0.4)'
+            : '0 8px 24px rgba(124,58,237,0.25)',
         }}
         whileHover={{ scale: 1.1, boxShadow: '0 12px 40px rgba(124,58,237,0.7)' }}
         whileTap={{ scale: 0.95 }}
@@ -450,8 +558,16 @@ const ChatBot = ({ activeSection = 'hero', isDark = true }) => {
               <X className="w-6 h-6 text-white" />
             </motion.div>
           ) : (
-            <motion.div key="chat" initial={{ rotate: 90, opacity: 0 }} animate={{ rotate: 0, opacity: 1 }} exit={{ rotate: -90, opacity: 0 }} transition={{ duration: 0.2 }}>
-              <MessageCircle className="w-6 h-6 text-white" />
+            <motion.div key="zen" className="w-full h-full p-0.5" initial={{ scale: 0.7, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.7, opacity: 0 }} transition={{ duration: 0.2 }}>
+              <img
+                src={zenGif}
+                alt="Zen"
+                className="w-full h-full object-cover rounded-full"
+                style={{
+                  filter: isDark ? 'invert(1) brightness(1.2)' : 'none',
+                  mixBlendMode: isDark ? 'screen' : 'multiply',
+                }}
+              />
             </motion.div>
           )}
         </AnimatePresence>
@@ -459,7 +575,12 @@ const ChatBot = ({ activeSection = 'hero', isDark = true }) => {
         {/* Unread dot when closed */}
         {!isOpen && (
           <motion.span
-            className={`absolute -top-0.5 -right-0.5 w-3.5 h-3.5 rounded-full bg-emerald-400 border-2 ${isDark ? 'border-[#0a0a0a]' : 'border-white'}`}
+            className="absolute -top-0.5 -right-0.5 w-3.5 h-3.5 rounded-full border-2"
+            style={{
+              background: '#6366f1',
+              borderColor: isDark ? '#0a0a0a' : '#ffffff',
+              boxShadow: '0 0 10px #6366f1',
+            }}
             animate={{ scale: [1, 1.2, 1] }}
             transition={{ duration: 2, repeat: Infinity }}
           />
@@ -500,15 +621,34 @@ const ChatBot = ({ activeSection = 'hero', isDark = true }) => {
             >
               <div className="relative">
                 <div
-                  className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl flex items-center justify-center"
-                  style={{ background: 'linear-gradient(135deg, #7c3aed, #2563eb)' }}
+                  className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl flex items-center justify-center overflow-hidden"
+                  style={{
+                    background: 'linear-gradient(135deg, #7c3aed, #2563eb)',
+                    boxShadow: '0 0 12px rgba(124,58,237,0.5)',
+                    border: '1px solid rgba(255,255,255,0.15)',
+                  }}
                 >
-                  <Bot className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
+                  <img
+                    src={zenGif}
+                    alt="Zen"
+                    className="w-full h-full object-cover"
+                    style={{
+                      filter: isDark ? 'invert(1) brightness(1.2)' : 'none',
+                      mixBlendMode: isDark ? 'screen' : 'multiply',
+                    }}
+                  />
                 </div>
-                <span className={`absolute -bottom-0.5 -right-0.5 w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full bg-emerald-400 border-2 ${isDark ? 'border-[#0a0a14]' : 'border-white'}`} />
+                <span
+                  className="absolute -bottom-0.5 -right-0.5 w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full border-2"
+                  style={{
+                    background: '#6366f1',
+                    borderColor: isDark ? '#0a0a14' : '#ffffff',
+                    boxShadow: '0 0 8px #6366f1',
+                  }}
+                />
               </div>
               <div className="flex-1 min-w-0">
-                <p className={`text-sm font-semibold leading-tight ${isDark ? 'text-white' : 'text-zinc-800'}`}>Toff's AI Assistant</p>
+                <p className={`text-sm font-semibold leading-tight ${isDark ? 'text-white' : 'text-zinc-800'}`}>Zen <span className="font-normal text-xs text-purple-400">· Toff's AI</span></p>
                 {SECTION_LABELS[activeSection] && activeSection !== 'hero' && (
                   <AnimatePresence mode="wait">
                     <motion.p
@@ -543,13 +683,28 @@ const ChatBot = ({ activeSection = 'hero', isDark = true }) => {
             >
               {/* Welcome state header (always visible at top of scroll list) */}
               <div className="text-center py-3 sm:py-4">
-                <div
-                  className="w-12 h-12 sm:w-16 sm:h-16 rounded-2xl flex items-center justify-center mx-auto mb-3 sm:mb-4"
-                  style={{ background: 'linear-gradient(135deg, rgba(124,58,237,0.2), rgba(37,99,235,0.2))', border: '1px solid rgba(124,58,237,0.3)' }}
+                <motion.div
+                  animate={{ y: [0, -4, 0] }}
+                  transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' }}
+                  className="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl flex items-center justify-center mx-auto mb-3 sm:mb-4 overflow-hidden"
+                  style={{
+                    background: 'linear-gradient(135deg, #7c3aed, #2563eb)',
+                    border: '1px solid rgba(255,255,255,0.15)',
+                    boxShadow: '0 0 24px rgba(124,58,237,0.6), 0 0 48px rgba(168,85,247,0.3)',
+                  }}
                 >
-                  <Bot className="w-6 h-6 sm:w-8 sm:h-8 text-purple-400" />
-                </div>
-                <p className={`font-semibold text-sm mb-1 ${isDark ? 'text-white' : 'text-zinc-800'}`}>Hey! I'm Toff's AI</p>
+                  <img
+                    src={zenGif}
+                    alt="Zen"
+                    className="w-full h-full object-cover"
+                    style={{
+                      filter: isDark ? 'invert(1) brightness(1.2)' : 'none',
+                      mixBlendMode: isDark ? 'screen' : 'multiply',
+                    }}
+                  />
+                </motion.div>
+                <p className={`font-bold text-sm mb-0.5 ${isDark ? 'text-white' : 'text-zinc-800'}`}>Hey! I'm <span className="text-purple-400">Zen</span> 👋</p>
+                <p className={`text-[11px] font-medium mb-1 ${isDark ? 'text-zinc-500' : 'text-zinc-400'}`}>Toff's AI Companion</p>
                 <p className={`text-xs leading-relaxed mb-4 sm:mb-5 px-2 sm:px-4 ${isDark ? 'text-zinc-400' : 'text-zinc-500'}`}>
                   Ask me anything about Toff — his projects, skills, experience, or how to get in touch!
                 </p>
@@ -702,6 +857,65 @@ const ChatBot = ({ activeSection = 'hero', isDark = true }) => {
               )}
             </AnimatePresence>
 
+            {/* ── Rate Limit Banner ── */}
+            <AnimatePresence>
+              {isRateLimited && (
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.9, y: 15 }}
+                  animate={{
+                    opacity: 1,
+                    scale: 1,
+                    y: 0,
+                    x: [0, -8, 8, -6, 6, -4, 4, 0],
+                  }}
+                  exit={{ opacity: 0, scale: 0.9, y: 15 }}
+                  transition={{ duration: 0.5, ease: 'easeInOut' }}
+                  className="flex-shrink-0 mx-3 mb-1.5 px-3 py-2.5 rounded-xl flex items-center gap-2.5 shadow-lg"
+                  style={{
+                    background: isDark
+                      ? 'linear-gradient(135deg, rgba(239, 68, 68, 0.15), rgba(245, 158, 11, 0.1))'
+                      : 'linear-gradient(135deg, rgba(239, 68, 68, 0.08), rgba(245, 158, 11, 0.05))',
+                    border: isDark
+                      ? '1px solid rgba(239, 68, 68, 0.35)'
+                      : '1px solid rgba(239, 68, 68, 0.25)',
+                    backdropFilter: 'blur(8px)',
+                  }}
+                >
+                  {/* Bouncing crying Zen */}
+                  <motion.div
+                    animate={{ y: [0, -5, 0], rotate: [-3, 3, -3] }}
+                    transition={{ duration: 1.0, repeat: Infinity, ease: 'easeInOut' }}
+                    className="flex-shrink-0 w-10 h-10 rounded-xl overflow-hidden select-none"
+                    style={{
+                      background: 'linear-gradient(135deg, #7c3aed, #2563eb)',
+                      border: '1px solid rgba(255,255,255,0.15)',
+                      boxShadow: '0 0 12px rgba(124,58,237,0.5)',
+                    }}
+                  >
+                    <img
+                      src={zenGif}
+                      alt="Zen sad"
+                      className="w-full h-full object-cover"
+                      style={{
+                        filter: isDark ? 'invert(1) brightness(1.2)' : 'none',
+                        mixBlendMode: isDark ? 'screen' : 'multiply',
+                      }}
+                    />
+                  </motion.div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-xs font-bold text-red-400 leading-tight">Oh no! Zen hit the rate limit 😢</p>
+                    <p className={`text-[10px] mt-0.5 leading-relaxed ${isDark ? 'text-zinc-300' : 'text-zinc-600'}`}>
+                      Please wait&nbsp;
+                      <span className="font-bold text-red-300 bg-red-500/10 px-1 py-0.5 rounded">{formatCooldown(cooldownSecs)}</span>
+                      &nbsp;(until&nbsp;
+                      <span className="font-semibold text-orange-300">{getResumeTime()}</span>
+                      ) before sending another message.
+                    </p>
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+
             {/* ── Input Bar ── */}
             <div
               className="flex-shrink-0 px-2.5 py-2.5 sm:px-3 sm:py-3"
@@ -710,8 +924,14 @@ const ChatBot = ({ activeSection = 'hero', isDark = true }) => {
               <div
                 className="flex items-end gap-2 rounded-xl px-2.5 py-2 sm:px-3"
                 style={{
-                  background: isDark ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.03)',
-                  border: isDark ? '1px solid rgba(255,255,255,0.1)' : '1px solid rgba(0,0,0,0.08)',
+                  background: isRateLimited
+                    ? isDark ? 'rgba(239,68,68,0.05)' : 'rgba(239,68,68,0.03)'
+                    : isDark ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.03)',
+                  border: isRateLimited
+                    ? '1px solid rgba(239,68,68,0.2)'
+                    : isDark ? '1px solid rgba(255,255,255,0.1)' : '1px solid rgba(0,0,0,0.08)',
+                  transition: 'background 0.3s, border 0.3s',
+                  opacity: isRateLimited ? 0.6 : 1,
                 }}
               >
                 <textarea
@@ -720,24 +940,28 @@ const ChatBot = ({ activeSection = 'hero', isDark = true }) => {
                   value={input}
                   onChange={e => setInput(e.target.value)}
                   onKeyDown={handleKeyDown}
-                  placeholder="Ask about Toff..."
+                  placeholder={isRateLimited ? `Wait ${formatCooldown(cooldownSecs)}…` : 'Ask about Toff...'}
                   rows={1}
-                  disabled={isLoading}
-                  className={`flex-1 bg-transparent text-sm resize-none outline-none leading-relaxed py-0.5 ${isDark ? 'text-zinc-100 placeholder-zinc-500' : 'text-zinc-700 placeholder-zinc-400'}`}
+                  disabled={isLoading || isRateLimited}
+                  className={`flex-1 bg-transparent text-sm resize-none outline-none leading-relaxed py-0.5 ${
+                    isRateLimited
+                      ? 'text-red-400/70 placeholder-red-400/50'
+                      : isDark ? 'text-zinc-100 placeholder-zinc-500' : 'text-zinc-700 placeholder-zinc-400'
+                  }`}
                   style={{ maxHeight: '80px', overflowY: 'auto' }}
                 />
                 <motion.button
                   id="chatbot-send"
                   onClick={() => sendMessage()}
-                  disabled={!input.trim() || isLoading}
-                  whileHover={input.trim() && !isLoading ? { scale: 1.1 } : {}}
-                  whileTap={input.trim() && !isLoading ? { scale: 0.9 } : {}}
+                  disabled={!input.trim() || isLoading || isRateLimited}
+                  whileHover={input.trim() && !isLoading && !isRateLimited ? { scale: 1.1 } : {}}
+                  whileTap={input.trim() && !isLoading && !isRateLimited ? { scale: 0.9 } : {}}
                   className="flex-shrink-0 w-8 h-8 rounded-lg flex items-center justify-center cursor-pointer transition-all"
                   style={{
-                    background: input.trim() && !isLoading
+                    background: input.trim() && !isLoading && !isRateLimited
                       ? 'linear-gradient(135deg, #7c3aed, #2563eb)'
                       : isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.05)',
-                    boxShadow: input.trim() && !isLoading ? '0 4px 15px rgba(124,58,237,0.4)' : 'none',
+                    boxShadow: input.trim() && !isLoading && !isRateLimited ? '0 4px 15px rgba(124,58,237,0.4)' : 'none',
                   }}
                   aria-label="Send message"
                 >
