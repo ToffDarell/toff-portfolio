@@ -6,6 +6,9 @@ import resume from '../assets/Toff Darell B. Vergara — Resume.pdf';
 
 const ROLES = ['Full Stack Developer', 'Software Engineer', 'SaaS Developer', 'AI Enthusiast'];
 
+// Returns 'I'm a' or 'I'm an' based on first letter of role
+const getRolePrefix = (role) => /^[aeiou]/i.test(role) ? "I'm an" : "I'm a";
+
 const Hero = () => {
   const [roleIdx, setRoleIdx] = useState(0);
 
@@ -32,13 +35,13 @@ const Hero = () => {
           </h1>
 
           <div className="flex flex-wrap items-center gap-2 text-xl sm:text-2xl font-medium text-text-muted-custom h-9" aria-live="polite" aria-label="Current role">
-            <span>I build as a</span>
+            <span>{getRolePrefix(ROLES[roleIdx])}</span>
             <AnimatedRole role={ROLES[roleIdx]} />
           </div>
 
           <p className="text-base sm:text-lg text-text-muted-custom max-w-xl leading-relaxed">
             Aspiring Full Stack Developer building modern web applications, SaaS platforms,
-            AI-powered systems, and digital solutions. 3rd Year IT student passionate about engineering the future.
+            AI-powered systems, and digital solutions. 4th Year IT student passionate about engineering the future.
           </p>
 
           <div className="flex flex-wrap gap-4 mt-4">

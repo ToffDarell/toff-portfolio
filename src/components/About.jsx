@@ -6,7 +6,7 @@ const CARDS = [
   {
     icon: <GraduationCap className="w-7 h-7" style={{ color: '#a78bfa' }} />,
     title: 'IT Student',
-    desc: '3rd Year Information Technology student mastering software engineering fundamentals.',
+    desc: '4th Year Information Technology student mastering software engineering fundamentals.',
     color: '#7c3aed',
   },
   {
@@ -32,7 +32,7 @@ const CARDS = [
 const STATS = [
   { value: '10+', label: 'Projects Built' },
   { value: '6+', label: 'Languages' },
-  { value: '3rd', label: 'Year IT Student' },
+  { value: '4th', label: 'Year IT Student' },
   { value: '∞', label: 'Passion to Learn' },
 ];
 

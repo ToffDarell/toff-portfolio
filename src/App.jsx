@@ -14,9 +14,11 @@ import Timeline from './components/Timeline';
 import Contact from './components/Contact';
 import Footer from './components/Footer';
 import Certifications from './components/Certifications';
+import ChatBot from './components/ChatBot';
 
 function App() {
   const [isLoading, setIsLoading] = useState(true);
+  const [activeSection, setActiveSection] = useState('hero');
   const [theme, setTheme] = useState(() => {
     if (typeof window !== 'undefined') {
       const saved = localStorage.getItem('portfolio-theme');
@@ -38,6 +40,25 @@ function App() {
   const toggleTheme = () => {
     setTheme(prev => (prev === 'dark' ? 'light' : 'dark'));
   };
+
+  // ── Section Tracking via IntersectionObserver ──────────────────────────────
+  useEffect(() => {
+    const SECTION_IDS = ['about', 'tech', 'certifications', 'projects', 'uiux', 'services', 'timeline', 'contact'];
+    const observers = [];
+
+    SECTION_IDS.forEach(id => {
+      const el = document.getElementById(id);
+      if (!el) return;
+      const observer = new IntersectionObserver(
+        ([entry]) => { if (entry.isIntersecting) setActiveSection(id); },
+        { threshold: 0.35 }
+      );
+      observer.observe(el);
+      observers.push(observer);
+    });
+
+    return () => observers.forEach(o => o.disconnect());
+  }, [isLoading]); // re-run after loading screen so DOM exists
 
   const isDark = theme === 'dark';
 
@@ -128,6 +149,7 @@ function App() {
       </main>
 
       <Footer />
+      <ChatBot activeSection={activeSection} />
       </div>
     </>
   );
