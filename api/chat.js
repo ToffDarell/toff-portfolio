@@ -48,9 +48,13 @@ const GROQ_API_URL = 'https://api.groq.com/openai/v1/chat/completions';
 // ── #1 CORS: Only allow requests originating from your own domain ─────────────
 // WHY: CORS prevents other websites from silently piggybacking on your endpoint
 // through a visitor's browser — the most realistic real-world abuse scenario.
-// NOTE: curl/server-side scripts bypass CORS by design, but that's a separate
-// threat. CORS still stops hotlinking from other websites, which is the priority.
-const ALLOWED_ORIGIN = 'https://toffdarell.dev';
+// Both www and non-www are included because browsers treat them as different
+// origins — a request from https://www.toffdarell.dev would be blocked if only
+// https://toffdarell.dev is listed, and vice versa.
+const ALLOWED_ORIGINS = new Set([
+  'https://toffdarell.dev',
+  'https://www.toffdarell.dev',
+]);
 
 // ── #4 LOCK: These values are always enforced server-side ────────────────────
 // WHY: If someone bypasses the frontend and calls /api/chat directly, they
@@ -65,9 +69,12 @@ export default async function handler(req) {
   // ── CORS check ──────────────────────────────────────────────────────────────
   const origin = req.headers.get('origin');
 
-  // Build CORS headers — always included so browsers get them even on errors
+  // Build CORS headers — always included so browsers get them even on errors.
+  // We echo back the exact requesting origin (if it's in our allowlist) because
+  // Access-Control-Allow-Origin can only be a single value, not a comma-separated list.
+  const allowedOrigin = ALLOWED_ORIGINS.has(origin) ? origin : null;
   const corsHeaders = {
-    'Access-Control-Allow-Origin': ALLOWED_ORIGIN,
+    'Access-Control-Allow-Origin': allowedOrigin ?? ALLOWED_ORIGINS.values().next().value,
     'Access-Control-Allow-Methods': 'POST, OPTIONS',
     'Access-Control-Allow-Headers': 'Content-Type',
   };
@@ -78,7 +85,7 @@ export default async function handler(req) {
   }
 
   // Reject requests from unexpected origins (blocks hotlinking from other sites)
-  if (origin && origin !== ALLOWED_ORIGIN) {
+  if (origin && !ALLOWED_ORIGINS.has(origin)) {
     return new Response(JSON.stringify({ error: 'Forbidden' }), {
       status: 403,
       headers: { 'Content-Type': 'application/json', ...corsHeaders },
