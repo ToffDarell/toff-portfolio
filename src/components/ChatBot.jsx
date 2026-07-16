@@ -296,6 +296,14 @@ const TypingIndicator = () => (
   </div>
 );
 
+// Helper to get 2 unique random suggestions from the section pool
+const getRandomSuggestions = (section) => {
+  const pool = SECTION_SUGGESTIONS[section] || DEFAULT_SUGGESTIONS;
+  if (!pool || pool.length === 0) return [];
+  const shuffled = [...pool].sort(() => 0.5 - Math.random());
+  return shuffled.slice(0, 2);
+};
+
 // ─── Main ChatBot Component ───────────────────────────────────────────────────
 const ChatBot = ({ activeSection = 'hero' }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -304,6 +312,7 @@ const ChatBot = ({ activeSection = 'hero' }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [showScrollBtn, setShowScrollBtn] = useState(false);
   const [isRedirecting, setIsRedirecting] = useState(false);
+  const [floatingSuggestions, setFloatingSuggestions] = useState([]);
   const messagesEndRef = useRef(null);
   const messagesContainerRef = useRef(null);
   const inputRef = useRef(null);
@@ -377,6 +386,10 @@ const ChatBot = ({ activeSection = 'hero' }) => {
             : m
         )
       );
+
+      // Generate new random floating suggestions
+      const randomSugs = getRandomSuggestions(activeSection);
+      setFloatingSuggestions(randomSugs);
     } catch (err) {
       setMessages(prev =>
         prev.map(m =>
@@ -607,6 +620,47 @@ const ChatBot = ({ activeSection = 'hero' }) => {
               {/* Typing indicator */}
               {isLoading && messages[messages.length - 1]?.role !== 'assistant' && (
                 <TypingIndicator />
+              )}
+
+              {/* Floating inline suggestions after the last message */}
+              {!isEmpty && !isLoading && messages[messages.length - 1]?.role === 'assistant' && (
+                <motion.div
+                  initial={{ opacity: 0, y: 8 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="flex flex-wrap gap-2 justify-start mt-2 pl-9 pr-4"
+                >
+                  {/* Always include Live Chat */}
+                  <motion.button
+                    whileHover={{ scale: 1.03, y: -1 }}
+                    whileTap={{ scale: 0.97 }}
+                    onClick={handleContactClick}
+                    className="text-xs px-3 py-1.5 rounded-full text-zinc-300 cursor-pointer transition-all flex items-center gap-1"
+                    style={{
+                      background: 'rgba(124, 58, 237, 0.15)',
+                      border: '1px solid rgba(124, 58, 237, 0.3)',
+                    }}
+                  >
+                    <span>💬</span>
+                    <span>Chat Live</span>
+                  </motion.button>
+
+                  {/* The 2 random suggestions */}
+                  {floatingSuggestions.map((s, idx) => (
+                    <motion.button
+                      key={idx}
+                      whileHover={{ scale: 1.03, y: -1 }}
+                      whileTap={{ scale: 0.97 }}
+                      onClick={() => sendMessage(s)}
+                      className="text-xs px-3 py-1.5 rounded-full text-zinc-300 cursor-pointer transition-all"
+                      style={{
+                        background: 'rgba(255, 255, 255, 0.05)',
+                        border: '1px solid rgba(255, 255, 255, 0.08)',
+                      }}
+                    >
+                      {s}
+                    </motion.button>
+                  ))}
+                </motion.div>
               )}
 
               <div ref={messagesEndRef} />
