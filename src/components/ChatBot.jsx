@@ -527,90 +527,96 @@ const ChatBot = ({ activeSection = 'hero' }) => {
               className="flex-1 overflow-y-auto px-4 py-4 space-y-4 scroll-smooth"
               style={{ scrollbarWidth: 'thin', scrollbarColor: 'rgba(124,58,237,0.3) transparent' }}
             >
-              {/* Welcome state */}
-              {isEmpty && (
-                <motion.div
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  className="text-center py-4"
+              {/* Welcome state header (always visible at top of scroll list) */}
+              <div className="text-center py-4">
+                <div
+                  className="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-4"
+                  style={{ background: 'linear-gradient(135deg, rgba(124,58,237,0.2), rgba(37,99,235,0.2))', border: '1px solid rgba(124,58,237,0.3)' }}
                 >
-                  <div
-                    className="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-4"
-                    style={{ background: 'linear-gradient(135deg, rgba(124,58,237,0.2), rgba(37,99,235,0.2))', border: '1px solid rgba(124,58,237,0.3)' }}
-                  >
-                    <Bot className="w-8 h-8 text-purple-400" />
-                  </div>
-                  <p className="text-white font-semibold text-sm mb-1">Hey! I'm Toff's AI</p>
-                  <p className="text-zinc-400 text-xs leading-relaxed mb-5 px-4">
-                    Ask me anything about Toff — his projects, skills, experience, or how to get in touch!
-                  </p>
+                  <Bot className="w-8 h-8 text-purple-400" />
+                </div>
+                <p className="text-white font-semibold text-sm mb-1">Hey! I'm Toff's AI</p>
+                <p className="text-zinc-400 text-xs leading-relaxed mb-5 px-4">
+                  Ask me anything about Toff — his projects, skills, experience, or how to get in touch!
+                </p>
 
-                  {/* Suggested questions — section-aware */}
-                  <div className="grid grid-cols-2 gap-2">
-                    {(SECTION_SUGGESTIONS[activeSection] || DEFAULT_SUGGESTIONS).map((s, i) => (
-                      <motion.button
-                        key={`${activeSection}-${i}`}
-                        initial={{ opacity: 0, y: 6 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: i * 0.05 }}
-                        whileHover={{ scale: 1.03, y: -1 }}
-                        whileTap={{ scale: 0.97 }}
-                        onClick={() => sendMessage(s)}
-                        className="text-xs px-3 py-2 rounded-xl text-left text-zinc-300 cursor-pointer transition-all"
-                        style={{
-                          background: 'rgba(255,255,255,0.05)',
-                          border: '1px solid rgba(255,255,255,0.08)',
-                        }}
-                      >
-                        {s}
-                      </motion.button>
-                    ))}
-                  </div>
-
-                  {/* ── Contact Toff CTA ── */}
-                  <motion.div
-                    initial={{ opacity: 0, y: 8 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.25 }}
-                    className="mt-3"
-                  >
-                    <motion.button
-                      id="chatbot-contact"
-                      onClick={handleContactClick}
-                      disabled={isRedirecting}
-                      whileHover={!isRedirecting ? { scale: 1.02, y: -1 } : {}}
-                      whileTap={!isRedirecting ? { scale: 0.98 } : {}}
-                      className="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl font-semibold text-sm text-white cursor-pointer transition-all relative overflow-hidden"
-                      style={{
-                        background: isRedirecting
-                          ? 'rgba(124,58,237,0.4)'
-                          : 'linear-gradient(135deg, #7c3aed, #2563eb)',
-                        boxShadow: isRedirecting ? 'none' : '0 4px 20px rgba(124,58,237,0.35)',
-                      }}
-                      aria-label="Open Messenger to contact Toff"
+                {/* Suggested questions & Contact Button (Only visible if chat is empty) */}
+                <AnimatePresence>
+                  {isEmpty && (
+                    <motion.div
+                      initial={{ opacity: 0, height: 0 }}
+                      animate={{ opacity: 1, height: 'auto' }}
+                      exit={{ opacity: 0, height: 0 }}
+                      className="overflow-hidden"
                     >
-                      {isRedirecting ? (
-                        <>
-                          <motion.span
-                            animate={{ rotate: 360 }}
-                            transition={{ duration: 0.8, repeat: Infinity, ease: 'linear' }}
-                            className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full inline-block"
-                          />
-                          <span className="text-white/80">Opening Messenger...</span>
-                        </>
-                      ) : (
-                        <>
-                          <span>💬</span>
-                          <span>Contact Toff</span>
-                        </>
-                      )}
-                    </motion.button>
-                    <p className="text-zinc-500 text-[10px] text-center mt-1.5 leading-relaxed">
-                      Discuss projects, internships, collaborations, or freelance work.
-                    </p>
-                  </motion.div>
-                </motion.div>
-              )}
+                      {/* Suggested questions — section-aware */}
+                      <div className="grid grid-cols-2 gap-2">
+                        {(SECTION_SUGGESTIONS[activeSection] || DEFAULT_SUGGESTIONS).map((s, i) => (
+                          <motion.button
+                            key={`${activeSection}-${i}`}
+                            initial={{ opacity: 0, y: 6 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ delay: i * 0.05 }}
+                            whileHover={{ scale: 1.03, y: -1 }}
+                            whileTap={{ scale: 0.97 }}
+                            onClick={() => sendMessage(s)}
+                            className="text-xs px-3 py-2 rounded-xl text-left text-zinc-300 cursor-pointer transition-all"
+                            style={{
+                              background: 'rgba(255,255,255,0.05)',
+                              border: '1px solid rgba(255,255,255,0.08)',
+                            }}
+                          >
+                            {s}
+                          </motion.button>
+                        ))}
+                      </div>
+
+                      {/* ── Contact Toff CTA ── */}
+                      <motion.div
+                        initial={{ opacity: 0, y: 8 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.25 }}
+                        className="mt-3"
+                      >
+                        <motion.button
+                          id="chatbot-contact"
+                          onClick={handleContactClick}
+                          disabled={isRedirecting}
+                          whileHover={!isRedirecting ? { scale: 1.02, y: -1 } : {}}
+                          whileTap={!isRedirecting ? { scale: 0.98 } : {}}
+                          className="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl font-semibold text-sm text-white cursor-pointer transition-all relative overflow-hidden"
+                          style={{
+                            background: isRedirecting
+                              ? 'rgba(124,58,237,0.4)'
+                              : 'linear-gradient(135deg, #7c3aed, #2563eb)',
+                            boxShadow: isRedirecting ? 'none' : '0 4px 20px rgba(124,58,237,0.35)',
+                          }}
+                          aria-label="Open Messenger to contact Toff"
+                        >
+                          {isRedirecting ? (
+                            <>
+                              <motion.span
+                                animate={{ rotate: 360 }}
+                                transition={{ duration: 0.8, repeat: Infinity, ease: 'linear' }}
+                                className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full inline-block"
+                              />
+                              <span className="text-white/80">Opening Messenger...</span>
+                            </>
+                          ) : (
+                            <>
+                              <span>💬</span>
+                              <span>Contact Toff</span>
+                            </>
+                          )}
+                        </motion.button>
+                        <p className="text-zinc-500 text-[10px] text-center mt-1.5 leading-relaxed">
+                          Discuss projects, internships, collaborations, or freelance work.
+                        </p>
+                      </motion.div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
 
               {/* Messages */}
               {messages.map((msg, i) => (
