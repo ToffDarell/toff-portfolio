@@ -105,7 +105,9 @@ Tools & Others: Git, GitHub, Figma, Canva, Cisco, Raspberry Pi
 - He's currently studying Information Technology at Bukidnon State University
 
 If someone asks to contact Toff or hire him, direct them to scroll to the Contact section or visit his LinkedIn/GitHub.
-If someone asks something you don't know about Toff, say "I don't have that information, but you can reach out to Toff directly through the contact form below!"`;
+If someone asks something you don't know about Toff, say "I don't have that information, but you can reach out to Toff directly through the contact form below!"
+Keep responses concise and professional. Limit most answers to 2–4 short paragraphs unless the user explicitly asks for details.`;
+
 
 // ─── Section Config ───────────────────────────────────────────────────────────
 const DEFAULT_SUGGESTIONS = [
