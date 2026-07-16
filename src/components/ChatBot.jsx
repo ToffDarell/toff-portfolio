@@ -233,7 +233,7 @@ const MessageBubble = ({ msg, isDark = true }) => {
 
       {/* Bubble */}
       <div
-        className={`max-w-[80%] px-3.5 py-2.5 rounded-2xl text-sm leading-relaxed shadow-md ${
+        className={`max-w-[85%] sm:max-w-[80%] px-3 py-2.5 sm:px-3.5 rounded-2xl text-sm leading-relaxed shadow-md ${
           isUser
             ? 'rounded-br-sm text-white'
             : `rounded-bl-sm ${isDark ? 'text-zinc-100' : 'text-zinc-800'}`
@@ -428,7 +428,7 @@ const ChatBot = ({ activeSection = 'hero', isDark = true }) => {
         id="chatbot-toggle"
         aria-label="Open AI chat assistant"
         onClick={() => setIsOpen(prev => !prev)}
-        className="fixed bottom-6 right-6 z-50 w-14 h-14 rounded-full flex items-center justify-center cursor-pointer shadow-2xl"
+        className="fixed bottom-5 right-5 sm:bottom-6 sm:right-6 z-50 w-12 h-12 sm:w-14 sm:h-14 rounded-full flex items-center justify-center cursor-pointer shadow-2xl"
         style={{
           background: 'linear-gradient(135deg, #7c3aed, #2563eb)',
           boxShadow: '0 8px 32px rgba(124,58,237,0.5)',
@@ -475,9 +475,11 @@ const ChatBot = ({ activeSection = 'hero', isDark = true }) => {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 30, scale: 0.92 }}
             transition={{ type: 'spring', stiffness: 400, damping: 30 }}
-            className="fixed bottom-24 right-6 z-50 w-[360px] sm:w-[400px] flex flex-col overflow-hidden rounded-2xl shadow-2xl"
+            className="fixed z-50 flex flex-col overflow-hidden rounded-2xl shadow-2xl
+              inset-x-3 bottom-20 h-[calc(100dvh-100px)]
+              sm:inset-auto sm:bottom-20 sm:right-5 sm:w-[380px] sm:h-[520px]
+              md:bottom-24 md:right-6 md:w-[400px] md:h-[540px]"
             style={{
-              height: '520px',
               background: isDark ? 'rgba(10, 10, 20, 0.92)' : 'rgba(255, 255, 255, 0.95)',
               border: isDark ? '1px solid rgba(255,255,255,0.08)' : '1px solid rgba(0,0,0,0.06)',
               backdropFilter: 'blur(24px)',
@@ -488,7 +490,7 @@ const ChatBot = ({ activeSection = 'hero', isDark = true }) => {
           >
             {/* ── Header ── */}
             <div
-              className="flex items-center gap-3 px-4 py-3.5 flex-shrink-0"
+              className="flex items-center gap-2.5 sm:gap-3 px-3 sm:px-4 py-3 sm:py-3.5 flex-shrink-0"
               style={{
                 background: isDark
                   ? 'linear-gradient(135deg, rgba(124,58,237,0.15), rgba(37,99,235,0.1))'
@@ -498,12 +500,12 @@ const ChatBot = ({ activeSection = 'hero', isDark = true }) => {
             >
               <div className="relative">
                 <div
-                  className="w-9 h-9 rounded-xl flex items-center justify-center"
+                  className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl flex items-center justify-center"
                   style={{ background: 'linear-gradient(135deg, #7c3aed, #2563eb)' }}
                 >
-                  <Bot className="w-5 h-5 text-white" />
+                  <Bot className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
                 </div>
-                <span className={`absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 rounded-full bg-emerald-400 border-2 ${isDark ? 'border-[#0a0a14]' : 'border-white'}`} />
+                <span className={`absolute -bottom-0.5 -right-0.5 w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full bg-emerald-400 border-2 ${isDark ? 'border-[#0a0a14]' : 'border-white'}`} />
               </div>
               <div className="flex-1 min-w-0">
                 <p className={`text-sm font-semibold leading-tight ${isDark ? 'text-white' : 'text-zinc-800'}`}>Toff's AI Assistant</p>
@@ -536,19 +538,19 @@ const ChatBot = ({ activeSection = 'hero', isDark = true }) => {
             <div
               ref={messagesContainerRef}
               onScroll={handleScroll}
-              className="flex-1 overflow-y-auto px-4 py-4 space-y-4 scroll-smooth"
+              className="flex-1 overflow-y-auto px-3 py-3 sm:px-4 sm:py-4 space-y-3 sm:space-y-4 scroll-smooth"
               style={{ scrollbarWidth: 'thin', scrollbarColor: isDark ? 'rgba(124,58,237,0.3) transparent' : 'rgba(124,58,237,0.2) transparent' }}
             >
               {/* Welcome state header (always visible at top of scroll list) */}
-              <div className="text-center py-4">
+              <div className="text-center py-3 sm:py-4">
                 <div
-                  className="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-4"
+                  className="w-12 h-12 sm:w-16 sm:h-16 rounded-2xl flex items-center justify-center mx-auto mb-3 sm:mb-4"
                   style={{ background: 'linear-gradient(135deg, rgba(124,58,237,0.2), rgba(37,99,235,0.2))', border: '1px solid rgba(124,58,237,0.3)' }}
                 >
-                  <Bot className="w-8 h-8 text-purple-400" />
+                  <Bot className="w-6 h-6 sm:w-8 sm:h-8 text-purple-400" />
                 </div>
                 <p className={`font-semibold text-sm mb-1 ${isDark ? 'text-white' : 'text-zinc-800'}`}>Hey! I'm Toff's AI</p>
-                <p className={`text-xs leading-relaxed mb-5 px-4 ${isDark ? 'text-zinc-400' : 'text-zinc-500'}`}>
+                <p className={`text-xs leading-relaxed mb-4 sm:mb-5 px-2 sm:px-4 ${isDark ? 'text-zinc-400' : 'text-zinc-500'}`}>
                   Ask me anything about Toff — his projects, skills, experience, or how to get in touch!
                 </p>
 
@@ -562,7 +564,7 @@ const ChatBot = ({ activeSection = 'hero', isDark = true }) => {
                       className="overflow-hidden"
                     >
                       {/* Suggested questions — section-aware */}
-                      <div className="grid grid-cols-2 gap-2">
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                         {(SECTION_SUGGESTIONS[activeSection] || DEFAULT_SUGGESTIONS).map((s, i) => (
                           <motion.button
                             key={`${activeSection}-${i}`}
@@ -572,7 +574,7 @@ const ChatBot = ({ activeSection = 'hero', isDark = true }) => {
                             whileHover={{ scale: 1.03, y: -1 }}
                             whileTap={{ scale: 0.97 }}
                             onClick={() => sendMessage(s)}
-                            className={`text-xs px-3 py-2 rounded-xl text-left cursor-pointer transition-all ${isDark ? 'text-zinc-300' : 'text-zinc-600'}`}
+                            className={`text-xs px-3 py-2.5 sm:py-2 rounded-xl text-left cursor-pointer transition-all ${isDark ? 'text-zinc-300' : 'text-zinc-600'}`}
                             style={{
                               background: isDark ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.03)',
                               border: isDark ? '1px solid rgba(255,255,255,0.08)' : '1px solid rgba(0,0,0,0.06)',
@@ -645,7 +647,7 @@ const ChatBot = ({ activeSection = 'hero', isDark = true }) => {
                 <motion.div
                   initial={{ opacity: 0, y: 8 }}
                   animate={{ opacity: 1, y: 0 }}
-                  className="flex flex-wrap gap-2 justify-start mt-2 pl-9 pr-4"
+                  className="flex flex-wrap gap-1.5 sm:gap-2 justify-start mt-2 pl-7 sm:pl-9 pr-3 sm:pr-4"
                 >
                   {/* Always include Live Chat */}
                   <motion.button
@@ -692,7 +694,7 @@ const ChatBot = ({ activeSection = 'hero', isDark = true }) => {
                   animate={{ opacity: 1, scale: 1 }}
                   exit={{ opacity: 0, scale: 0.8 }}
                   onClick={() => scrollToBottom()}
-                  className="absolute bottom-20 right-4 w-8 h-8 rounded-full flex items-center justify-center cursor-pointer shadow-lg z-10"
+                  className="absolute bottom-20 right-3 sm:right-4 w-7 h-7 sm:w-8 sm:h-8 rounded-full flex items-center justify-center cursor-pointer shadow-lg z-10"
                   style={{ background: 'rgba(124,58,237,0.8)', border: '1px solid rgba(124,58,237,0.5)' }}
                 >
                   <ChevronDown className="w-4 h-4 text-white" />
@@ -702,11 +704,11 @@ const ChatBot = ({ activeSection = 'hero', isDark = true }) => {
 
             {/* ── Input Bar ── */}
             <div
-              className="flex-shrink-0 px-3 py-3"
+              className="flex-shrink-0 px-2.5 py-2.5 sm:px-3 sm:py-3"
               style={{ borderTop: isDark ? '1px solid rgba(255,255,255,0.06)' : '1px solid rgba(0,0,0,0.06)' }}
             >
               <div
-                className="flex items-end gap-2 rounded-xl px-3 py-2"
+                className="flex items-end gap-2 rounded-xl px-2.5 py-2 sm:px-3"
                 style={{
                   background: isDark ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.03)',
                   border: isDark ? '1px solid rgba(255,255,255,0.1)' : '1px solid rgba(0,0,0,0.08)',
