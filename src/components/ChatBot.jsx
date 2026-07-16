@@ -169,7 +169,7 @@ async function callGroq(messages, onChunk, activeSection = 'hero', onRateLimit =
       model: 'llama-3.3-70b-versatile',
       messages: [{ role: 'system', content: buildSystemPrompt(activeSection) }, ...messages],
       stream: true,
-      max_tokens: 512,
+      max_tokens: 400,
       temperature: 0.7,
     }),
   });
@@ -472,7 +472,7 @@ const ChatBot = ({ activeSection = 'hero', isDark = true }) => {
     setMessages(prev => [...prev, { role: 'assistant', content: '', streaming: true, id: assistantMsgId }]);
 
     try {
-      const history = newMessages.map(m => ({ role: m.role, content: m.content }));
+      const history = newMessages.slice(-10).map(m => ({ role: m.role, content: m.content }));
       let fullContent = '';
 
       await callGroq(
