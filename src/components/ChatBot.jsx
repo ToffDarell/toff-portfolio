@@ -205,7 +205,7 @@ async function callGroq(messages, onChunk, activeSection = 'hero') {
 }
 
 // ─── Message Bubble ───────────────────────────────────────────────────────────
-const MessageBubble = ({ msg }) => {
+const MessageBubble = ({ msg, isDark = true }) => {
   const isUser = msg.role === 'user';
   return (
     <motion.div
@@ -220,8 +220,10 @@ const MessageBubble = ({ msg }) => {
         style={{
           background: isUser
             ? 'linear-gradient(135deg, #7c3aed, #2563eb)'
-            : 'linear-gradient(135deg, #1e1e2e, #2d2d44)',
-          border: '1px solid rgba(255,255,255,0.1)',
+            : isDark
+              ? 'linear-gradient(135deg, #1e1e2e, #2d2d44)'
+              : 'linear-gradient(135deg, #e8e8f0, #d4d4e0)',
+          border: isDark ? '1px solid rgba(255,255,255,0.1)' : '1px solid rgba(0,0,0,0.08)',
         }}
       >
         {isUser
@@ -234,17 +236,21 @@ const MessageBubble = ({ msg }) => {
         className={`max-w-[80%] px-3.5 py-2.5 rounded-2xl text-sm leading-relaxed shadow-md ${
           isUser
             ? 'rounded-br-sm text-white'
-            : 'rounded-bl-sm text-zinc-100'
+            : `rounded-bl-sm ${isDark ? 'text-zinc-100' : 'text-zinc-800'}`
         }`}
         style={{
           background: isUser
             ? 'linear-gradient(135deg, #7c3aed, #2563eb)'
-            : 'rgba(255,255,255,0.06)',
-          border: isUser ? 'none' : '1px solid rgba(255,255,255,0.08)',
+            : isDark
+              ? 'rgba(255,255,255,0.06)'
+              : 'rgba(255,255,255,0.9)',
+          border: isUser ? 'none' : isDark ? '1px solid rgba(255,255,255,0.08)' : '1px solid rgba(0,0,0,0.06)',
           backdropFilter: 'blur(12px)',
           boxShadow: isUser
             ? '0 4px 20px rgba(124,58,237,0.3)'
-            : '0 2px 10px rgba(0,0,0,0.3)',
+            : isDark
+              ? '0 2px 10px rgba(0,0,0,0.3)'
+              : '0 2px 10px rgba(0,0,0,0.08)',
           whiteSpace: 'pre-wrap',
           wordBreak: 'break-word',
         }}
@@ -265,13 +271,15 @@ const MessageBubble = ({ msg }) => {
 };
 
 // ─── Typing Indicator ─────────────────────────────────────────────────────────
-const TypingIndicator = () => (
+const TypingIndicator = ({ isDark = true }) => (
   <div className="flex gap-2.5 items-end">
     <div
       className="flex-shrink-0 w-7 h-7 rounded-full flex items-center justify-center shadow-lg"
       style={{
-        background: 'linear-gradient(135deg, #1e1e2e, #2d2d44)',
-        border: '1px solid rgba(255,255,255,0.1)',
+        background: isDark
+          ? 'linear-gradient(135deg, #1e1e2e, #2d2d44)'
+          : 'linear-gradient(135deg, #e8e8f0, #d4d4e0)',
+        border: isDark ? '1px solid rgba(255,255,255,0.1)' : '1px solid rgba(0,0,0,0.08)',
       }}
     >
       <Bot className="w-3.5 h-3.5 text-purple-400" />
@@ -279,8 +287,8 @@ const TypingIndicator = () => (
     <div
       className="px-4 py-3 rounded-2xl rounded-bl-sm flex gap-1.5 items-center"
       style={{
-        background: 'rgba(255,255,255,0.06)',
-        border: '1px solid rgba(255,255,255,0.08)',
+        background: isDark ? 'rgba(255,255,255,0.06)' : 'rgba(255,255,255,0.9)',
+        border: isDark ? '1px solid rgba(255,255,255,0.08)' : '1px solid rgba(0,0,0,0.06)',
         backdropFilter: 'blur(12px)',
       }}
     >
@@ -305,7 +313,7 @@ const getRandomSuggestions = (section) => {
 };
 
 // ─── Main ChatBot Component ───────────────────────────────────────────────────
-const ChatBot = ({ activeSection = 'hero' }) => {
+const ChatBot = ({ activeSection = 'hero', isDark = true }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState('');
@@ -451,7 +459,7 @@ const ChatBot = ({ activeSection = 'hero' }) => {
         {/* Unread dot when closed */}
         {!isOpen && (
           <motion.span
-            className="absolute -top-0.5 -right-0.5 w-3.5 h-3.5 rounded-full bg-emerald-400 border-2 border-[#0a0a0a]"
+            className={`absolute -top-0.5 -right-0.5 w-3.5 h-3.5 rounded-full bg-emerald-400 border-2 ${isDark ? 'border-[#0a0a0a]' : 'border-white'}`}
             animate={{ scale: [1, 1.2, 1] }}
             transition={{ duration: 2, repeat: Infinity }}
           />
@@ -470,18 +478,22 @@ const ChatBot = ({ activeSection = 'hero' }) => {
             className="fixed bottom-24 right-6 z-50 w-[360px] sm:w-[400px] flex flex-col overflow-hidden rounded-2xl shadow-2xl"
             style={{
               height: '520px',
-              background: 'rgba(10, 10, 20, 0.92)',
-              border: '1px solid rgba(255,255,255,0.08)',
+              background: isDark ? 'rgba(10, 10, 20, 0.92)' : 'rgba(255, 255, 255, 0.95)',
+              border: isDark ? '1px solid rgba(255,255,255,0.08)' : '1px solid rgba(0,0,0,0.06)',
               backdropFilter: 'blur(24px)',
-              boxShadow: '0 32px 80px rgba(0,0,0,0.6), 0 0 0 1px rgba(124,58,237,0.2)',
+              boxShadow: isDark
+                ? '0 32px 80px rgba(0,0,0,0.6), 0 0 0 1px rgba(124,58,237,0.2)'
+                : '0 32px 80px rgba(0,0,0,0.12), 0 0 0 1px rgba(124,58,237,0.15)',
             }}
           >
             {/* ── Header ── */}
             <div
               className="flex items-center gap-3 px-4 py-3.5 flex-shrink-0"
               style={{
-                background: 'linear-gradient(135deg, rgba(124,58,237,0.15), rgba(37,99,235,0.1))',
-                borderBottom: '1px solid rgba(255,255,255,0.06)',
+                background: isDark
+                  ? 'linear-gradient(135deg, rgba(124,58,237,0.15), rgba(37,99,235,0.1))'
+                  : 'linear-gradient(135deg, rgba(124,58,237,0.08), rgba(37,99,235,0.05))',
+                borderBottom: isDark ? '1px solid rgba(255,255,255,0.06)' : '1px solid rgba(0,0,0,0.06)',
               }}
             >
               <div className="relative">
@@ -491,10 +503,10 @@ const ChatBot = ({ activeSection = 'hero' }) => {
                 >
                   <Bot className="w-5 h-5 text-white" />
                 </div>
-                <span className="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 rounded-full bg-emerald-400 border-2 border-[#0a0a14]" />
+                <span className={`absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 rounded-full bg-emerald-400 border-2 ${isDark ? 'border-[#0a0a14]' : 'border-white'}`} />
               </div>
               <div className="flex-1 min-w-0">
-                <p className="text-sm font-semibold text-white leading-tight">Toff's AI Assistant</p>
+                <p className={`text-sm font-semibold leading-tight ${isDark ? 'text-white' : 'text-zinc-800'}`}>Toff's AI Assistant</p>
                 {SECTION_LABELS[activeSection] && activeSection !== 'hero' && (
                   <AnimatePresence mode="wait">
                     <motion.p
@@ -513,7 +525,7 @@ const ChatBot = ({ activeSection = 'hero' }) => {
               </div>
               <button
                 onClick={() => setIsOpen(false)}
-                className="text-zinc-500 hover:text-zinc-200 transition-colors cursor-pointer p-1"
+                className={`transition-colors cursor-pointer p-1 ${isDark ? 'text-zinc-500 hover:text-zinc-200' : 'text-zinc-400 hover:text-zinc-700'}`}
                 aria-label="Close chat"
               >
                 <X className="w-4 h-4" />
@@ -525,7 +537,7 @@ const ChatBot = ({ activeSection = 'hero' }) => {
               ref={messagesContainerRef}
               onScroll={handleScroll}
               className="flex-1 overflow-y-auto px-4 py-4 space-y-4 scroll-smooth"
-              style={{ scrollbarWidth: 'thin', scrollbarColor: 'rgba(124,58,237,0.3) transparent' }}
+              style={{ scrollbarWidth: 'thin', scrollbarColor: isDark ? 'rgba(124,58,237,0.3) transparent' : 'rgba(124,58,237,0.2) transparent' }}
             >
               {/* Welcome state header (always visible at top of scroll list) */}
               <div className="text-center py-4">
@@ -535,8 +547,8 @@ const ChatBot = ({ activeSection = 'hero' }) => {
                 >
                   <Bot className="w-8 h-8 text-purple-400" />
                 </div>
-                <p className="text-white font-semibold text-sm mb-1">Hey! I'm Toff's AI</p>
-                <p className="text-zinc-400 text-xs leading-relaxed mb-5 px-4">
+                <p className={`font-semibold text-sm mb-1 ${isDark ? 'text-white' : 'text-zinc-800'}`}>Hey! I'm Toff's AI</p>
+                <p className={`text-xs leading-relaxed mb-5 px-4 ${isDark ? 'text-zinc-400' : 'text-zinc-500'}`}>
                   Ask me anything about Toff — his projects, skills, experience, or how to get in touch!
                 </p>
 
@@ -560,10 +572,10 @@ const ChatBot = ({ activeSection = 'hero' }) => {
                             whileHover={{ scale: 1.03, y: -1 }}
                             whileTap={{ scale: 0.97 }}
                             onClick={() => sendMessage(s)}
-                            className="text-xs px-3 py-2 rounded-xl text-left text-zinc-300 cursor-pointer transition-all"
+                            className={`text-xs px-3 py-2 rounded-xl text-left cursor-pointer transition-all ${isDark ? 'text-zinc-300' : 'text-zinc-600'}`}
                             style={{
-                              background: 'rgba(255,255,255,0.05)',
-                              border: '1px solid rgba(255,255,255,0.08)',
+                              background: isDark ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.03)',
+                              border: isDark ? '1px solid rgba(255,255,255,0.08)' : '1px solid rgba(0,0,0,0.06)',
                             }}
                           >
                             {s}
@@ -609,7 +621,7 @@ const ChatBot = ({ activeSection = 'hero' }) => {
                             </>
                           )}
                         </motion.button>
-                        <p className="text-zinc-500 text-[10px] text-center mt-1.5 leading-relaxed">
+                        <p className={`text-[10px] text-center mt-1.5 leading-relaxed ${isDark ? 'text-zinc-500' : 'text-zinc-400'}`}>
                           Discuss projects, internships, collaborations, or freelance work.
                         </p>
                       </motion.div>
@@ -620,12 +632,12 @@ const ChatBot = ({ activeSection = 'hero' }) => {
 
               {/* Messages */}
               {messages.map((msg, i) => (
-                <MessageBubble key={msg.id || i} msg={msg} />
+                <MessageBubble key={msg.id || i} msg={msg} isDark={isDark} />
               ))}
 
               {/* Typing indicator */}
               {isLoading && messages[messages.length - 1]?.role !== 'assistant' && (
-                <TypingIndicator />
+                <TypingIndicator isDark={isDark} />
               )}
 
               {/* Floating inline suggestions after the last message */}
@@ -640,10 +652,10 @@ const ChatBot = ({ activeSection = 'hero' }) => {
                     whileHover={{ scale: 1.03, y: -1 }}
                     whileTap={{ scale: 0.97 }}
                     onClick={handleContactClick}
-                    className="text-xs px-3 py-1.5 rounded-full text-zinc-300 cursor-pointer transition-all flex items-center gap-1"
+                    className={`text-xs px-3 py-1.5 rounded-full cursor-pointer transition-all flex items-center gap-1 ${isDark ? 'text-zinc-300' : 'text-zinc-600'}`}
                     style={{
-                      background: 'rgba(124, 58, 237, 0.15)',
-                      border: '1px solid rgba(124, 58, 237, 0.3)',
+                      background: isDark ? 'rgba(124, 58, 237, 0.15)' : 'rgba(124, 58, 237, 0.08)',
+                      border: isDark ? '1px solid rgba(124, 58, 237, 0.3)' : '1px solid rgba(124, 58, 237, 0.15)',
                     }}
                   >
                     <span>💬</span>
@@ -657,10 +669,10 @@ const ChatBot = ({ activeSection = 'hero' }) => {
                       whileHover={{ scale: 1.03, y: -1 }}
                       whileTap={{ scale: 0.97 }}
                       onClick={() => sendMessage(s)}
-                      className="text-xs px-3 py-1.5 rounded-full text-zinc-300 cursor-pointer transition-all"
+                      className={`text-xs px-3 py-1.5 rounded-full cursor-pointer transition-all ${isDark ? 'text-zinc-300' : 'text-zinc-600'}`}
                       style={{
-                        background: 'rgba(255, 255, 255, 0.05)',
-                        border: '1px solid rgba(255, 255, 255, 0.08)',
+                        background: isDark ? 'rgba(255, 255, 255, 0.05)' : 'rgba(0, 0, 0, 0.03)',
+                        border: isDark ? '1px solid rgba(255, 255, 255, 0.08)' : '1px solid rgba(0, 0, 0, 0.06)',
                       }}
                     >
                       {s}
@@ -691,13 +703,13 @@ const ChatBot = ({ activeSection = 'hero' }) => {
             {/* ── Input Bar ── */}
             <div
               className="flex-shrink-0 px-3 py-3"
-              style={{ borderTop: '1px solid rgba(255,255,255,0.06)' }}
+              style={{ borderTop: isDark ? '1px solid rgba(255,255,255,0.06)' : '1px solid rgba(0,0,0,0.06)' }}
             >
               <div
                 className="flex items-end gap-2 rounded-xl px-3 py-2"
                 style={{
-                  background: 'rgba(255,255,255,0.05)',
-                  border: '1px solid rgba(255,255,255,0.1)',
+                  background: isDark ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.03)',
+                  border: isDark ? '1px solid rgba(255,255,255,0.1)' : '1px solid rgba(0,0,0,0.08)',
                 }}
               >
                 <textarea
@@ -709,7 +721,7 @@ const ChatBot = ({ activeSection = 'hero' }) => {
                   placeholder="Ask about Toff..."
                   rows={1}
                   disabled={isLoading}
-                  className="flex-1 bg-transparent text-sm text-zinc-100 placeholder-zinc-500 resize-none outline-none leading-relaxed py-0.5"
+                  className={`flex-1 bg-transparent text-sm resize-none outline-none leading-relaxed py-0.5 ${isDark ? 'text-zinc-100 placeholder-zinc-500' : 'text-zinc-700 placeholder-zinc-400'}`}
                   style={{ maxHeight: '80px', overflowY: 'auto' }}
                 />
                 <motion.button
@@ -722,7 +734,7 @@ const ChatBot = ({ activeSection = 'hero' }) => {
                   style={{
                     background: input.trim() && !isLoading
                       ? 'linear-gradient(135deg, #7c3aed, #2563eb)'
-                      : 'rgba(255,255,255,0.06)',
+                      : isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.05)',
                     boxShadow: input.trim() && !isLoading ? '0 4px 15px rgba(124,58,237,0.4)' : 'none',
                   }}
                   aria-label="Send message"
@@ -730,7 +742,7 @@ const ChatBot = ({ activeSection = 'hero' }) => {
                   <Send className="w-3.5 h-3.5 text-white" />
                 </motion.button>
               </div>
-              <p className="text-center text-zinc-600 text-[10px] mt-2">
+              <p className={`text-center text-[10px] mt-2 ${isDark ? 'text-zinc-600' : 'text-zinc-400'}`}>
                 AI may make mistakes · Toff's info as of 2025
               </p>
             </div>

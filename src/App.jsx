@@ -149,7 +149,7 @@ function App() {
       </main>
 
       <Footer />
-      <ChatBot activeSection={activeSection} />
+      <ChatBot activeSection={activeSection} isDark={isDark} />
       </div>
     </>
   );
