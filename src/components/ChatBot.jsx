@@ -157,15 +157,24 @@ const buildSystemPrompt = (activeSection) => {
   return `${SYSTEM_PROMPT}\n\n=== CURRENT PAGE CONTEXT ===\n${ctx}`;
 };
 
-// ─── Groq API Call (with 429 handling) ──────────────────────────────────────
+// ─── Groq API Call (via Vercel Edge Function) ────────────────────────────────
+//
+// SECURITY: The Groq API key has been moved to a Vercel Edge Function at
+// /api/chat.js. It is stored in Vercel's server-side environment variables
+// (GROQ_API_KEY — no VITE_ prefix). This function now calls our own backend
+// endpoint instead of Groq directly, so the key is never included in the
+// browser bundle, visible in DevTools, or transmitted in client-side requests.
+//
+// The Edge Function pipes Groq's SSE stream back transparently, so all
+// streaming, 429 rate-limit handling, and chunk parsing below work unchanged.
+//
 // onRateLimit(retryAfterSeconds) is called when the API returns 429.
 async function callGroq(messages, onChunk, activeSection = 'hero', onRateLimit = null) {
-  const apiKey = import.meta.env.VITE_GROQ_API_KEY;
-  const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+  // /api/chat is our Vercel Edge Function — same origin, no API key in the browser.
+  const response = await fetch('/api/chat', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      Authorization: `Bearer ${apiKey}`,
     },
     body: JSON.stringify({
       model: 'llama-3.3-70b-versatile',
