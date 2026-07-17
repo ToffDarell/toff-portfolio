@@ -19,14 +19,12 @@ export default defineConfig({
     //   3. Chunks load in parallel, improving initial page load.
     rollupOptions: {
       output: {
-        manualChunks: {
-          // three.js ecosystem (~700 kB) — largest offender
-          'vendor-three': ['three'],
-          'vendor-r3f':   ['@react-three/fiber', '@react-three/drei'],
-          // Framer Motion (~140 kB)
-          'vendor-motion': ['framer-motion'],
-          // React core — almost never changes, long-lived cache
-          'vendor-react':  ['react', 'react-dom'],
+        manualChunks(id) {
+          if (id.includes('node_modules')) {
+            if (id.includes('three'))      return 'vendor-three';
+            if (id.includes('framer-motion')) return 'vendor-motion';
+            if (id.includes('react'))      return 'vendor-react';
+          }
         },
       },
     },
