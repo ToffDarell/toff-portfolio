@@ -313,14 +313,11 @@ export default async function handler(req) {
         Authorization: `Bearer ${apiKey}`,
       },
       body: JSON.stringify({
-        // Spread any remaining fields from the client (e.g. stream: true)
-        ...body,
-        // Then override the security-critical fields unconditionally
         messages:    finalMessages,
         model:       ENFORCED_MODEL,
         max_tokens:  ENFORCED_MAX_TOKENS,
         temperature: ENFORCED_TEMPERATURE,
-        stream:      true, // always stream — matches ChatBot.jsx reader
+        stream:      true,
       }),
     });
 
