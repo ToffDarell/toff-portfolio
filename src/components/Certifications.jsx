@@ -43,7 +43,7 @@ const Certifications = () => {
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
-          className="text-sm font-semibold tracking-widest uppercase mb-3 text-primary-custom"
+          className="text-sm font-semibold tracking-widest uppercase mb-3 text-[var(--color-purple-light)]"
         >
           Achievements
         </motion.p>

@@ -37,7 +37,7 @@ const UIUX = () => (
 
     <div className="text-center mb-16">
       <motion.p initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }}
-        className="text-sm font-semibold tracking-widest uppercase mb-3 text-primary-custom">
+        className="text-sm font-semibold tracking-widest uppercase mb-3 text-[var(--color-purple-light)]">
         Design work
       </motion.p>
       <motion.h2 initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
