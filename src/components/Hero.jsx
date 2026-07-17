@@ -70,7 +70,7 @@ const Hero = () => {
           {/* Socials */}
           <div className="flex items-center gap-6 pt-6">
             {[
-              { icon: <FaGithub className="w-6 h-6" />, href: 'https://github.com/ToffDarell', hover: '#a855f7' },
+              { icon: <FaGithub className="w-6 h-6" />, href: 'https://github.com/ToffDarell', hover: '#a78bfa' },
               { icon: <FaLinkedin className="w-6 h-6" />, href: 'https://www.linkedin.com/in/toff-darell-vergara-839462408/', hover: '#3b82f6' },
               { icon: <FaFacebook className="w-6 h-6" />, href: 'https://www.facebook.com/toffdarell', hover: '#2563eb' },
               { icon: <FaInstagram className="w-6 h-6" />, href: 'https://www.instagram.com/topewooo/', hover: '#E1306C' },

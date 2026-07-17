@@ -7,14 +7,14 @@ export default {
   theme: {
     extend: {
       colors: {
-        background: '#030014',
-        primary: '#7c3aed', // neon purple
-        secondary: '#2563eb', // neon blue
+        background: '#000000',
+        primary: '#7c3aed',
+        secondary: '#2563eb',
         surface: 'rgba(255, 255, 255, 0.05)',
         surfaceHover: 'rgba(255, 255, 255, 0.1)',
       },
       fontFamily: {
-        sans: ['Inter', 'sans-serif'],
+        sans: ['Geist Variable', 'Geist', 'system-ui', 'sans-serif'],
       },
       animation: {
         'spin-slow': 'spin 8s linear infinite',

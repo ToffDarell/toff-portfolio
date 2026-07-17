@@ -51,6 +51,21 @@
     --scrollbar-thumb: #CBD5E1;
     --scrollbar-thumb-hover: #94A3B8;
 
+    /* Brand gradient & accent colors */
+    --gradient-primary: linear-gradient(135deg, #7c3aed, #2563eb);
+    --gradient-primary-hover: linear-gradient(135deg, #6d28d9, #1d4ed8);
+    --color-purple: #7c3aed;
+    --color-purple-light: #a78bfa;
+    --color-blue: #2563eb;
+    --color-blue-light: #60a5fa;
+    --color-rose: #f43f5e;
+
+    /* Social media brand colors */
+    --social-github: #ffffff;
+    --social-linkedin: #3b82f6;
+    --social-facebook: #2563eb;
+    --social-instagram: #E1306C;
+
     /* Theme-aware service accent colors */
     --srv-web: #7c3aed;
     --srv-saas: #2563eb;
@@ -75,9 +90,17 @@
     --accent-custom: #f43f5e;
     --accent-glow: rgba(244, 63, 94, 0.2);
     --glass-card-shadow-hover: 0 12px 32px 0 rgba(124, 58, 237, 0.2);
-    --scrollbar-bg: #030014;
+    --scrollbar-bg: #000000;
     --scrollbar-thumb: #333333;
     --scrollbar-thumb-hover: #555555;
+
+    /* Brand gradient & accent colors (dark) */
+    --gradient-primary: linear-gradient(135deg, #a78bfa, #60a5fa);
+    --gradient-primary-hover: linear-gradient(135deg, #c4b5fd, #93c5fd);
+    --color-purple: #a78bfa;
+    --color-purple-light: #c4b5fd;
+    --color-blue: #60a5fa;
+    --color-blue-light: #93c5fd;
 
     /* Theme-aware service accent colors */
     --srv-web: #a78bfa;
@@ -149,7 +172,7 @@
   }
 
   .text-gradient {
-    background: linear-gradient(135deg, #a78bfa, #60a5fa, #a78bfa);
+    background: var(--gradient-primary);
     background-clip: text;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
@@ -157,7 +180,7 @@
   }
 
   .dark .text-gradient {
-    background: linear-gradient(135deg, #c4b5fd, #60a5fa, #f43f5e);
+    background: var(--gradient-primary);
     background-clip: text;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;

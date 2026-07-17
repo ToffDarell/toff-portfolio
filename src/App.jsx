@@ -63,7 +63,7 @@ function App() {
   const isDark = theme === 'dark';
 
   const particleColors = isDark
-    ? ["#7c3aed", "#2563eb", "#a855f7", "#3b82f6"]
+    ? ["#7c3aed", "#2563eb", "#a78bfa", "#60a5fa"]
     : ["#1e293b", "#3b82f6", "#475569", "#2563eb"];
 
   return (
@@ -74,7 +74,7 @@ function App() {
 
       <div className="relative min-h-screen w-full overflow-hidden bg-background-custom text-text-custom font-sans transition-colors duration-300">
       {/* Global Background */}
-      <div className={`fixed inset-0 z-0 ${isDark ? 'bg-[#050505]' : ''}`}>
+      <div className={`fixed inset-0 z-0 ${isDark ? 'bg-black' : ''}`}>
         {isDark ? (
           <div className="w-full h-full opacity-60">
             <DarkVeil 

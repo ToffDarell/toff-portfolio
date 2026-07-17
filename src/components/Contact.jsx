@@ -170,10 +170,10 @@ const Contact = () => {
               <p className="text-xs text-text-muted-custom mb-4 uppercase tracking-wider font-semibold">Connect</p>
               <div className="flex gap-3">
                 {[
-                  { icon: <FaGithub className="w-5 h-5" />, href: 'https://github.com/ToffDarell', label: 'GitHub', color: '#ffffff', bg: 'rgba(255,255,255,0.1)' },
-                  { icon: <FaLinkedin className="w-5 h-5" />, href: 'https://www.linkedin.com/in/toff-darell-vergara-839462408/', label: 'LinkedIn', color: '#3b82f6', bg: 'rgba(59,130,246,0.15)' },
-                  { icon: <FaFacebook className="w-5 h-5" />, href: 'https://www.facebook.com/toffdarell', label: 'Facebook', color: '#2563eb', bg: 'rgba(37,99,235,0.15)' },
-                  { icon: <FaInstagram className="w-5 h-5" />, href: 'https://www.instagram.com/topewooo/', label: 'Instagram', color: '#E1306C', bg: 'rgba(225,48,108,0.15)' },
+                  { icon: <FaGithub className="w-5 h-5" />, href: 'https://github.com/ToffDarell', label: 'GitHub', color: 'var(--social-github)', bg: 'rgba(255,255,255,0.1)' },
+                  { icon: <FaLinkedin className="w-5 h-5" />, href: 'https://www.linkedin.com/in/toff-darell-vergara-839462408/', label: 'LinkedIn', color: 'var(--social-linkedin)', bg: 'rgba(59,130,246,0.15)' },
+                  { icon: <FaFacebook className="w-5 h-5" />, href: 'https://www.facebook.com/toffdarell', label: 'Facebook', color: 'var(--social-facebook)', bg: 'rgba(37,99,235,0.15)' },
+                  { icon: <FaInstagram className="w-5 h-5" />, href: 'https://www.instagram.com/topewooo/', label: 'Instagram', color: 'var(--social-instagram)', bg: 'rgba(225,48,108,0.15)' },
                 ].map(({ icon, href, label, color, bg }, i) => (
                   <motion.a key={i} href={href} target="_blank" rel="noopener noreferrer" aria-label={label}
                     whileHover={{ scale: 1.15, y: -3 }}
@@ -268,8 +268,8 @@ const Contact = () => {
               background:
                 status === 'sent'    ? 'rgba(5,150,105,0.9)' :
                 status === 'error'   ? 'rgba(220,38,38,0.8)' :
-                'linear-gradient(135deg, #7c3aed, #2563eb)',
-              boxShadow: '0 0 20px rgba(124,58,237,0.3)',
+                'var(--gradient-primary)',
+              boxShadow: '0 0 20px var(--primary-glow)',
               opacity: status === 'sending' ? 0.7 : 1,
               cursor: status === 'sending' ? 'not-allowed' : 'pointer',
             }}

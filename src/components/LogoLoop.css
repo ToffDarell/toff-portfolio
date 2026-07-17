@@ -18,7 +18,7 @@
 
 @media (prefers-color-scheme: dark) {
   .logoloop {
-    --logoloop-fadeColorAuto: #030014; /* Matched my background */
+    --logoloop-fadeColorAuto: #000000;
   }
 }
 

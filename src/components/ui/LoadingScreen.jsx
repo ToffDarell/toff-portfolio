@@ -50,7 +50,7 @@ const LoadingScreen = ({ onComplete }) => {
       initial={{ opacity: 1 }}
       exit={{ opacity: 0, y: -50 }}
       transition={{ duration: 0.5, ease: [0.76, 0, 0.24, 1] }}
-      className="fixed inset-0 z-[9999] flex flex-col items-center justify-center bg-[#050505] text-white font-mono"
+      className="fixed inset-0 z-[9999] flex flex-col items-center justify-center bg-black text-white font-mono"
     >
       <div className="w-full max-w-xs px-6 flex flex-col space-y-6">
         

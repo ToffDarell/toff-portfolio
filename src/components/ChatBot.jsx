@@ -456,9 +456,9 @@ const ChatBot = ({ activeSection = 'hero', isDark = true }) => {
           <motion.span
             className="absolute -top-0.5 -right-0.5 w-3.5 h-3.5 rounded-full border-2"
             style={{
-              background: '#6366f1',
+              background: 'var(--color-purple)',
               borderColor: isDark ? '#0a0a0a' : '#ffffff',
-              boxShadow: '0 0 10px #6366f1',
+              boxShadow: '0 0 10px var(--color-purple)',
             }}
             animate={{ scale: [1, 1.2, 1] }}
             transition={{ duration: 2, repeat: Infinity }}
@@ -520,9 +520,9 @@ const ChatBot = ({ activeSection = 'hero', isDark = true }) => {
                 <span
                   className="absolute -bottom-0.5 -right-0.5 w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full border-2"
                   style={{
-                    background: '#6366f1',
+                    background: 'var(--color-purple)',
                     borderColor: isDark ? '#0a0a14' : '#ffffff',
-                    boxShadow: '0 0 8px #6366f1',
+                    boxShadow: '0 0 8px var(--color-purple)',
                   }}
                 />
               </div>
