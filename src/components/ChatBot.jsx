@@ -901,16 +901,20 @@ const ChatBot = ({ activeSection = 'hero', isDark = true }) => {
                         onClick={() => {
                           const subject = "Let's Connect / Project Inquiry";
                           const body = "Hi Toff,\n\nI'd love to connect! Here is what's on my mind:\n\n[Briefly describe your project, system idea, or query here...]\n\nLooking forward to hearing from you!";
-                          const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-                          
-                          if (isMobile) {
-                            // On mobile, trigger standard mailto protocol to open default mail client (Gmail/Apple Mail)
-                            const mailtoUrl = `mailto:topedarell13@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-                            window.location.href = mailtoUrl;
+                          const ua = navigator.userAgent;
+                          const encodedTo = encodeURIComponent('topedarell13@gmail.com');
+                          const encodedSu = encodeURIComponent(subject);
+                          const encodedBody = encodeURIComponent(body);
+
+                          if (/iPhone|iPad|iPod/i.test(ua)) {
+                            // iOS — open Gmail app directly (no "Sent from my iPhone")
+                            window.location.href = `googlegmail:///co?to=${encodedTo}&su=${encodedSu}&body=${encodedBody}`;
+                          } else if (/Android/i.test(ua)) {
+                            // Android — force Gmail app via intent URL
+                            window.location.href = `intent://mail.google.com/mail/?view=cm&to=${encodedTo}&su=${encodedSu}&body=${encodedBody}#Intent;scheme=https;package=com.google.android.gm;end`;
                           } else {
-                            // On desktop, open Gmail in a new tab
-                            const gmailUrl = `https://mail.google.com/mail/?view=cm&to=topedarell13@gmail.com&su=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-                            window.open(gmailUrl, '_blank', 'noopener,noreferrer');
+                            // Desktop — open Gmail web
+                            window.open(`https://mail.google.com/mail/?view=cm&to=${encodedTo}&su=${encodedSu}&body=${encodedBody}`, '_blank', 'noopener,noreferrer');
                           }
                           setShowContactModal(false);
                         }}

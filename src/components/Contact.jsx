@@ -8,15 +8,30 @@ const EMAILJS_SERVICE_ID = import.meta.env.VITE_EMAILJS_SERVICE_ID;
 const EMAILJS_TEMPLATE_ID = import.meta.env.VITE_EMAILJS_TEMPLATE_ID;
 const EMAILJS_PUBLIC_KEY  = import.meta.env.VITE_EMAILJS_PUBLIC_KEY;
 
-// Opens Gmail compose with a pre-filled subject + body.
+// Opens Gmail with device-specific deep links.
+// iOS: googlegmail:///co opens Gmail app directly (no "Sent from my iPhone")
+// Android: intent:// forces Gmail app instead of browser
+// Desktop: Gmail web compose URL
 const GMAIL_TO = 'topedarell13@gmail.com';
 const getEmailLink = (subject, body) => {
   if (typeof window === 'undefined') return '';
-  const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-  if (isMobile) {
-    return `mailto:${GMAIL_TO}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+  const ua = navigator.userAgent;
+  const encodedTo = encodeURIComponent(GMAIL_TO);
+  const encodedSu = encodeURIComponent(subject);
+  const encodedBody = encodeURIComponent(body);
+
+  // iOS — Gmail app URL scheme
+  if (/iPhone|iPad|iPod/i.test(ua)) {
+    return `googlegmail:///co?to=${encodedTo}&su=${encodedSu}&body=${encodedBody}`;
   }
-  return `https://mail.google.com/mail/?view=cm&to=${encodeURIComponent(GMAIL_TO)}&su=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+
+  // Android — intent URL forces Gmail app (package: com.google.android.gm)
+  if (/Android/i.test(ua)) {
+    return `intent://mail.google.com/mail/?view=cm&to=${encodedTo}&su=${encodedSu}&body=${encodedBody}#Intent;scheme=https;package=com.google.android.gm;end`;
+  }
+
+  // Desktop — Gmail web compose
+  return `https://mail.google.com/mail/?view=cm&to=${encodedTo}&su=${encodedSu}&body=${encodedBody}`;
 };
 
 const Contact = () => {
