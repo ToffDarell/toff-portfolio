@@ -25,9 +25,9 @@ const getEmailLink = (subject, body) => {
     return `googlegmail:///co?to=${encodedTo}&su=${encodedSu}&body=${encodedBody}`;
   }
 
-  // Android — intent URL forces Gmail app (package: com.google.android.gm)
+  // Android — intent URL forces Gmail app via SENDTO action
   if (/Android/i.test(ua)) {
-    return `intent://mail.google.com/mail/?view=cm&to=${encodedTo}&su=${encodedSu}&body=${encodedBody}#Intent;scheme=https;package=com.google.android.gm;end`;
+    return `mailto:${GMAIL_TO}?subject=${encodedSu}&body=${encodedBody}#Intent;action=android.intent.action.SENDTO;type=message/rfc822;package=com.google.android.gm;end`;
   }
 
   // Desktop — Gmail web compose

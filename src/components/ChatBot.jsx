@@ -910,8 +910,8 @@ const ChatBot = ({ activeSection = 'hero', isDark = true }) => {
                             // iOS — open Gmail app directly (no "Sent from my iPhone")
                             window.location.href = `googlegmail:///co?to=${encodedTo}&su=${encodedSu}&body=${encodedBody}`;
                           } else if (/Android/i.test(ua)) {
-                            // Android — force Gmail app via intent URL
-                            window.location.href = `intent://mail.google.com/mail/?view=cm&to=${encodedTo}&su=${encodedSu}&body=${encodedBody}#Intent;scheme=https;package=com.google.android.gm;end`;
+                            // Android — force Gmail app via SENDTO intent
+                            window.location.href = `mailto:topedarell13@gmail.com?subject=${encodedSu}&body=${encodedBody}#Intent;action=android.intent.action.SENDTO;type=message/rfc822;package=com.google.android.gm;end`;
                           } else {
                             // Desktop — open Gmail web
                             window.open(`https://mail.google.com/mail/?view=cm&to=${encodedTo}&su=${encodedSu}&body=${encodedBody}`, '_blank', 'noopener,noreferrer');
