@@ -53,7 +53,7 @@ const GROQ_API_URL = 'https://api.groq.com/openai/v1/chat/completions';
 // https://toffdarell.dev is listed, and vice versa.
 const ALLOWED_ORIGINS = new Set([
   'https://toffdarell.dev',
-  'https://www.toffdarell.dev',
+  'https://www.toffdarell.dev'
 ]);
 
 // ── #4 LOCK: These values are always enforced server-side ────────────────────

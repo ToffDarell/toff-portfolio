@@ -1,19 +1,23 @@
 import React, { useState, useRef } from 'react';
 import { motion } from 'framer-motion';
-import { Mail, Send, MapPin, CheckCircle, Loader } from 'lucide-react';
+import { Mail, Send, MapPin, CheckCircle, Loader, Paperclip } from 'lucide-react';
 import { FaGithub, FaLinkedin, FaFacebook, FaInstagram } from 'react-icons/fa';
 import emailjs from '@emailjs/browser';
 
-
 const EMAILJS_SERVICE_ID = import.meta.env.VITE_EMAILJS_SERVICE_ID;
 const EMAILJS_TEMPLATE_ID = import.meta.env.VITE_EMAILJS_TEMPLATE_ID;
-const EMAILJS_PUBLIC_KEY = import.meta.env.VITE_EMAILJS_PUBLIC_KEY;
+const EMAILJS_PUBLIC_KEY  = import.meta.env.VITE_EMAILJS_PUBLIC_KEY;
 
+// Opens Gmail compose with a pre-filled subject + body.
+const GMAIL_TO = 'topedarell13@gmail.com';
+const gmailLink = (subject, body) =>
+  `https://mail.google.com/mail/?view=cm&to=${encodeURIComponent(GMAIL_TO)}&su=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
 
 const Contact = () => {
   const formRef = useRef(null);
   const [status, setStatus] = useState('idle');
 
+  // Form submission via EmailJS (no Gmail redirection for plain text messages)
   const handleSubmit = async (e) => {
     e.preventDefault();
     setStatus('sending');
@@ -38,10 +42,12 @@ const Contact = () => {
     border: '1px solid var(--glass-border)',
     color: 'var(--text-custom)',
   };
+
   const onFocus = (e) => {
     e.target.style.borderColor = 'rgba(124,58,237,0.6)';
     e.target.style.boxShadow = '0 0 0 2px rgba(124,58,237,0.15)';
   };
+
   const onBlur = (e) => {
     e.target.style.borderColor = 'var(--glass-border)';
     e.target.style.boxShadow = 'none';
@@ -90,9 +96,13 @@ const Contact = () => {
             </div>
 
             <div className="space-y-4">
-              <a
-                href="mailto:topedarell13@gmail.com"
-                className="flex items-center gap-4 p-3 rounded-xl transition-all group"
+              {/* Email Link */}
+              <motion.a
+                href={gmailLink("Project Inquiry / Let's Collaborate!", "Hi Toff,\n\nI found your portfolio and would love to chat about a potential project, internship, or collaboration opportunity!\n\nHere is what's on my mind:\n- What I want to build/discuss: \n- Best way to reach back: \n\nTalk soon!")}
+                target="_blank"
+                rel="noopener noreferrer"
+                whileHover={{ scale: 1.02 }}
+                className="flex items-center gap-4 p-3 rounded-xl transition-all group cursor-pointer"
                 style={{ background: 'rgba(124,58,237,0.08)', border: '1px solid rgba(124,58,237,0.2)' }}
               >
                 <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0" style={{ background: 'rgba(124,58,237,0.2)' }}>
@@ -102,8 +112,27 @@ const Contact = () => {
                   <p className="text-xs text-text-muted-custom mb-0.5">Email</p>
                   <p className="text-sm font-semibold text-text-custom group-hover:text-purple-300 transition-colors">topedarell13@gmail.com</p>
                 </div>
-              </a>
+              </motion.a>
 
+              {/* PDF/Proposal Link -> direct to Gmail with instructions to attach */}
+              <motion.a
+                href={gmailLink('Project Proposal & Documentation', "Hi Toff,\n\nI have a project proposal, wireframe, or scope document I'd like to share with you!\n\nI've attached the file to this email. Here are the quick details:\n- Project Name: \n- Estimated Timeline/Budget: \n- Brief Overview: \n\n(Please click the attachment icon below in Gmail to upload your PDF/file!)")}
+                target="_blank"
+                rel="noopener noreferrer"
+                whileHover={{ scale: 1.02 }}
+                className="flex items-center gap-4 p-3 rounded-xl transition-all group cursor-pointer text-left"
+                style={{ background: 'rgba(37,99,235,0.08)', border: '1px solid rgba(37,99,235,0.2)' }}
+              >
+                <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0" style={{ background: 'rgba(37,99,235,0.2)' }}>
+                  <Paperclip className="w-5 h-5" style={{ color: '#60a5fa' }} />
+                </div>
+                <div>
+                  <p className="text-xs text-text-muted-custom mb-0.5">Have a proposal?</p>
+                  <p className="text-sm font-semibold text-text-custom group-hover:text-blue-300 transition-colors">Send proposal PDF via Gmail</p>
+                </div>
+              </motion.a>
+
+              {/* Location */}
               <div className="flex items-center gap-4 p-3 rounded-xl" style={{ background: 'rgba(37,99,235,0.08)', border: '1px solid rgba(37,99,235,0.2)' }}>
                 <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0" style={{ background: 'rgba(37,99,235,0.2)' }}>
                   <MapPin className="w-5 h-5" style={{ color: '#60a5fa' }} />
@@ -213,7 +242,7 @@ const Contact = () => {
             disabled={status === 'sending'}
             whileHover={status === 'idle' ? { scale: 1.02, boxShadow: '0 0 30px rgba(124,58,237,0.5)' } : {}}
             whileTap={status === 'idle' ? { scale: 0.98 } : {}}
-            className="w-full py-4 rounded-xl font-bold text-white flex items-center justify-center gap-2 transition-all"
+            className="w-full py-4 rounded-xl font-bold text-white flex items-center justify-center gap-2 transition-all cursor-pointer"
             style={{
               background:
                 status === 'sent'    ? 'rgba(5,150,105,0.9)' :

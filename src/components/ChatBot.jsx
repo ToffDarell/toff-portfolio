@@ -254,7 +254,7 @@ const ChatBot = ({ activeSection = 'hero', isDark = true }) => {
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [showScrollBtn, setShowScrollBtn] = useState(false);
-  const [isRedirecting, setIsRedirecting] = useState(false);
+  const [showContactModal, setShowContactModal] = useState(false);
   const [floatingSuggestions, setFloatingSuggestions] = useState([]);
   // Rate-limit cooldown: timestamp (ms) when the user can send again
   const [rateLimitUntil, setRateLimitUntil] = useState(null);
@@ -265,12 +265,7 @@ const ChatBot = ({ activeSection = 'hero', isDark = true }) => {
   const inputRef = useRef(null);
 
   const handleContactClick = () => {
-    if (isRedirecting) return;
-    setIsRedirecting(true);
-    setTimeout(() => {
-      window.open('https://m.me/toffdarell', '_blank', 'noopener,noreferrer');
-      setIsRedirecting(false);
-    }, 600);
+    setShowContactModal(true);
   };
 
   // ── Rate-limit countdown ticker ──
@@ -634,33 +629,17 @@ const ChatBot = ({ activeSection = 'hero', isDark = true }) => {
                         <motion.button
                           id="chatbot-contact"
                           onClick={handleContactClick}
-                          disabled={isRedirecting}
-                          whileHover={!isRedirecting ? { scale: 1.02, y: -1 } : {}}
-                          whileTap={!isRedirecting ? { scale: 0.98 } : {}}
+                          whileHover={{ scale: 1.02, y: -1 }}
+                          whileTap={{ scale: 0.98 }}
                           className="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl font-semibold text-sm text-white cursor-pointer transition-all relative overflow-hidden"
                           style={{
-                            background: isRedirecting
-                              ? 'rgba(124,58,237,0.4)'
-                              : 'linear-gradient(135deg, #7c3aed, #2563eb)',
-                            boxShadow: isRedirecting ? 'none' : '0 4px 20px rgba(124,58,237,0.35)',
+                            background: 'linear-gradient(135deg, #7c3aed, #2563eb)',
+                            boxShadow: '0 4px 20px rgba(124,58,237,0.35)',
                           }}
-                          aria-label="Open Messenger to contact Toff"
+                          aria-label="Open contact option modal"
                         >
-                          {isRedirecting ? (
-                            <>
-                              <motion.span
-                                animate={{ rotate: 360 }}
-                                transition={{ duration: 0.8, repeat: Infinity, ease: 'linear' }}
-                                className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full inline-block"
-                              />
-                              <span className="text-white/80">Opening Messenger...</span>
-                            </>
-                          ) : (
-                            <>
-                              <span>💬</span>
-                              <span>Contact Toff</span>
-                            </>
-                          )}
+                          <span>💬</span>
+                          <span>Contact Toff</span>
                         </motion.button>
                         <p className={`text-[10px] text-center mt-1.5 leading-relaxed ${isDark ? 'text-zinc-500' : 'text-zinc-400'}`}>
                           Discuss projects, internships, collaborations, or freelance work.
@@ -856,6 +835,93 @@ const ChatBot = ({ activeSection = 'hero', isDark = true }) => {
                 AI may make mistakes · Toff's info as of 2025
               </p>
             </div>
+
+            {/* ── Contact Channel Selection Overlay ── */}
+            <AnimatePresence>
+              {showContactModal && (
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  className="absolute inset-0 bg-black/60 backdrop-blur-[4px] z-50 flex items-center justify-center p-4"
+                >
+                  <motion.div
+                    initial={{ scale: 0.9, opacity: 0 }}
+                    animate={{ scale: 1, opacity: 1 }}
+                    exit={{ scale: 0.9, opacity: 0 }}
+                    className="w-full max-w-[280px] p-5 rounded-2xl border flex flex-col gap-4 text-center glass relative overflow-hidden"
+                    style={{
+                      background: isDark ? 'rgba(10, 10, 20, 0.96)' : 'rgba(255, 255, 255, 0.96)',
+                      borderColor: isDark ? 'rgba(124, 58, 237, 0.3)' : 'rgba(124, 58, 237, 0.15)',
+                      boxShadow: isDark 
+                        ? '0 20px 40px rgba(0,0,0,0.5), 0 0 0 1px rgba(124,58,237,0.15)'
+                        : '0 20px 40px rgba(0,0,0,0.08), 0 0 0 1px rgba(124,58,237,0.1)',
+                    }}
+                  >
+                    <div className="flex justify-between items-center pb-2" style={{ borderBottom: isDark ? '1px solid rgba(255,255,255,0.06)' : '1px solid rgba(0,0,0,0.06)' }}>
+                      <h4 className={`text-sm font-bold ${isDark ? 'text-zinc-200' : 'text-zinc-800'}`}>Contact Channels</h4>
+                      <button
+                        onClick={() => setShowContactModal(false)}
+                        className={`p-1 rounded-lg cursor-pointer transition-colors ${isDark ? 'text-zinc-400 hover:text-zinc-200 hover:bg-white/5' : 'text-zinc-500 hover:text-zinc-800 hover:bg-zinc-100'}`}
+                      >
+                        <X className="w-4 h-4" />
+                      </button>
+                    </div>
+
+                    <p className={`text-xs ${isDark ? 'text-zinc-400' : 'text-zinc-500'}`}>
+                      How would you like to get in touch with Toff?
+                    </p>
+
+                    <div className="flex flex-col gap-2.5">
+                      {/* Messenger button */}
+                      <motion.button
+                        whileHover={{ scale: 1.02 }}
+                        whileTap={{ scale: 0.98 }}
+                        onClick={() => {
+                          window.open('https://m.me/toffdarell', '_blank', 'noopener,noreferrer');
+                          setShowContactModal(false);
+                        }}
+                        className="flex items-center gap-3 p-3 rounded-xl border text-left cursor-pointer transition-all hover:bg-purple-500/10 hover:border-purple-500/30"
+                        style={{
+                          background: isDark ? 'rgba(255, 255, 255, 0.02)' : 'rgba(0, 0, 0, 0.01)',
+                          borderColor: isDark ? 'rgba(255, 255, 255, 0.08)' : 'rgba(0, 0, 0, 0.08)',
+                        }}
+                      >
+                        <span className="text-xl">💬</span>
+                        <div>
+                          <p className={`text-xs font-bold ${isDark ? 'text-zinc-200' : 'text-zinc-700'}`}>Messenger</p>
+                          <p className={`text-[10px] ${isDark ? 'text-zinc-500' : 'text-zinc-400'}`}>Direct chat with Toff</p>
+                        </div>
+                      </motion.button>
+
+                      {/* Gmail button */}
+                      <motion.button
+                        whileHover={{ scale: 1.02 }}
+                        whileTap={{ scale: 0.98 }}
+                        onClick={() => {
+                          const subject = "Let's Connect / Project Inquiry";
+                          const body = "Hi Toff,\n\nI'd love to connect! Here is what's on my mind:\n\n[Briefly describe your project, system idea, or query here...]\n\nLooking forward to hearing from you!";
+                          const gmailUrl = `https://mail.google.com/mail/?view=cm&to=topedarell13@gmail.com&su=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+                          window.open(gmailUrl, '_blank', 'noopener,noreferrer');
+                          setShowContactModal(false);
+                        }}
+                        className="flex items-center gap-3 p-3 rounded-xl border text-left cursor-pointer transition-all hover:bg-blue-500/10 hover:border-blue-500/30"
+                        style={{
+                          background: isDark ? 'rgba(255, 255, 255, 0.02)' : 'rgba(0, 0, 0, 0.01)',
+                          borderColor: isDark ? 'rgba(255, 255, 255, 0.08)' : 'rgba(0, 0, 0, 0.08)',
+                        }}
+                      >
+                        <span className="text-xl">✉️</span>
+                        <div>
+                          <p className={`text-xs font-bold ${isDark ? 'text-zinc-200' : 'text-zinc-700'}`}>Gmail</p>
+                          <p className={`text-[10px] ${isDark ? 'text-zinc-500' : 'text-zinc-400'}`}>Send documents & details</p>
+                        </div>
+                      </motion.button>
+                    </div>
+                  </motion.div>
+                </motion.div>
+              )}
+            </AnimatePresence>
           </motion.div>
         )}
       </AnimatePresence>
