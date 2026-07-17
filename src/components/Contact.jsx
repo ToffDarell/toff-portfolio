@@ -10,8 +10,14 @@ const EMAILJS_PUBLIC_KEY  = import.meta.env.VITE_EMAILJS_PUBLIC_KEY;
 
 // Opens Gmail compose with a pre-filled subject + body.
 const GMAIL_TO = 'topedarell13@gmail.com';
-const gmailLink = (subject, body) =>
-  `https://mail.google.com/mail/?view=cm&to=${encodeURIComponent(GMAIL_TO)}&su=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+const getEmailLink = (subject, body) => {
+  if (typeof window === 'undefined') return '';
+  const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+  if (isMobile) {
+    return `mailto:${GMAIL_TO}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+  }
+  return `https://mail.google.com/mail/?view=cm&to=${encodeURIComponent(GMAIL_TO)}&su=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+};
 
 const Contact = () => {
   const formRef = useRef(null);
@@ -98,7 +104,7 @@ const Contact = () => {
             <div className="space-y-4">
               {/* Email Link */}
               <motion.a
-                href={gmailLink("Project Inquiry / Let's Collaborate!", "Hi Toff,\n\nI found your portfolio and would love to chat about a potential project, internship, or collaboration opportunity!\n\nHere is what's on my mind:\n- What I want to build/discuss: \n- Best way to reach back: \n\nTalk soon!")}
+                href={getEmailLink("Project Inquiry / Let's Collaborate!", "Hi Toff,\n\nI found your portfolio and would love to chat about a potential project, internship, or collaboration opportunity!\n\nHere is what's on my mind:\n- What I want to build/discuss: \n- Best way to reach back: \n\nTalk soon!")}
                 target="_blank"
                 rel="noopener noreferrer"
                 whileHover={{ scale: 1.02 }}
@@ -116,7 +122,7 @@ const Contact = () => {
 
               {/* PDF/Proposal Link -> direct to Gmail with instructions to attach */}
               <motion.a
-                href={gmailLink('Project Proposal & Documentation', "Hi Toff,\n\nI have a project proposal, wireframe, or scope document I'd like to share with you!\n\nI've attached the file to this email. Here are the quick details:\n- Project Name: \n- Estimated Timeline/Budget: \n- Brief Overview: \n\n(Please click the attachment icon below in Gmail to upload your PDF/file!)")}
+                href={getEmailLink('Project Proposal & Documentation', "Hi Toff,\n\nI have a project proposal, wireframe, or scope document I'd like to share with you!\n\nI've attached the file to this email. Here are the quick details:\n- Project Name: \n- Estimated Timeline/Budget: \n- Brief Overview: \n\n(Please click the attachment icon below in Gmail to upload your PDF/file!)")}
                 target="_blank"
                 rel="noopener noreferrer"
                 whileHover={{ scale: 1.02 }}

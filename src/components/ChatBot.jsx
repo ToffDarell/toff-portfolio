@@ -901,8 +901,17 @@ const ChatBot = ({ activeSection = 'hero', isDark = true }) => {
                         onClick={() => {
                           const subject = "Let's Connect / Project Inquiry";
                           const body = "Hi Toff,\n\nI'd love to connect! Here is what's on my mind:\n\n[Briefly describe your project, system idea, or query here...]\n\nLooking forward to hearing from you!";
-                          const gmailUrl = `https://mail.google.com/mail/?view=cm&to=topedarell13@gmail.com&su=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-                          window.open(gmailUrl, '_blank', 'noopener,noreferrer');
+                          const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+                          
+                          if (isMobile) {
+                            // On mobile, trigger standard mailto protocol to open default mail client (Gmail/Apple Mail)
+                            const mailtoUrl = `mailto:topedarell13@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+                            window.location.href = mailtoUrl;
+                          } else {
+                            // On desktop, open Gmail in a new tab
+                            const gmailUrl = `https://mail.google.com/mail/?view=cm&to=topedarell13@gmail.com&su=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+                            window.open(gmailUrl, '_blank', 'noopener,noreferrer');
+                          }
                           setShowContactModal(false);
                         }}
                         className="flex items-center gap-3 p-3 rounded-xl border text-left cursor-pointer transition-all hover:bg-blue-500/10 hover:border-blue-500/30"
